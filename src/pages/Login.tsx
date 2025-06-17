@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,12 +15,29 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   
-  const { login, isLoading } = useAuth();
+  const { login, isLoading, user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
 
-  const from = location.state?.from?.pathname || '/';
+  const from = location.state?.from?.pathname || null;
+
+  // Handle redirection after successful login
+  useEffect(() => {
+    if (user) {
+      if (from) {
+        navigate(from, { replace: true });
+      } else {
+        const redirectPath = user.role === 'ADMIN' ? '/admin/dashboard' : '/student/dashboard';
+        navigate(redirectPath, { replace: true });
+      }
+    }
+  }, [user, from, navigate]);
+
+  // Redirect if already logged in (initial load)
+  if (user) {
+    return null; // Will be handled by useEffect
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,12 +51,7 @@ export default function Login() {
         description: 'Bem-vindo à SN Academy',
       });
       
-      // Redirect based on role or intended destination
-      if (from !== '/') {
-        navigate(from, { replace: true });
-      } else {
-        navigate('/admin/dashboard', { replace: true });
-      }
+      // Redirect will be handled by the useEffect below after user state is updated
     } else {
       setError('Email ou senha incorretos');
     }

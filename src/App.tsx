@@ -7,6 +7,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { Layout } from "@/components/Layout";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { RoleBasedRedirect } from "@/components/RoleBasedRedirect";
 
 // Pages
 import Login from "./pages/Login";
@@ -33,7 +34,7 @@ const App = () => (
               <Route path="/login" element={<Login />} />
               
               {/* Protected Routes */}
-              <Route path="/" element={<Navigate to="/admin/dashboard" replace />} />
+              <Route path="/" element={<RoleBasedRedirect />} />
               
               {/* Admin Routes */}
               <Route 
