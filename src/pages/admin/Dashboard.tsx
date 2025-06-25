@@ -4,6 +4,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { StatusBadge } from '@/components/StatusBadge';
 import { Button } from '@/components/ui/button';
 import { DollarSign, Users, TrendingUp, Clock, Eye } from 'lucide-react';
+import { Layout } from '@/components/Layout';
 
 // Mock data
 const recentSales = [
@@ -38,6 +39,7 @@ const recentSales = [
 
 export default function AdminDashboard() {
   return (
+    <Layout>
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
@@ -134,5 +136,6 @@ export default function AdminDashboard() {
         </CardContent>
       </Card>
     </div>
+    </Layout>
   );
 }

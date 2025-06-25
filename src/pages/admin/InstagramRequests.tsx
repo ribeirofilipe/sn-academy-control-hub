@@ -1,6 +1,5 @@
 
 import { useState } from 'react';
-import { Layout } from '@/components/Layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { StatusBadge } from '@/components/StatusBadge';
@@ -24,22 +23,28 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { useInstagramRequests, useApproveInstagramRequest } from '@/hooks/useInstagramRequests';
+import { Layout } from '@/components/Layout';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export default function InstagramRequests() {
   const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
   const [selectedRequest, setSelectedRequest] = useState<any>(null);
   
   const { data: instagramRequests = [], isLoading, refetch } = useInstagramRequests();
   const approveMutation = useApproveInstagramRequest();
 
-  const filteredRequests = instagramRequests.filter((request) => {
-    const matchesSearch = 
-      request.student_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      request.student_email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      request.instagram_handle.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    return matchesSearch;
+  const filteredRequests = instagramRequests
+    .filter((request) => request.status === statusFilter)
+    .filter((request) => {
+      const search = searchTerm.toLowerCase();
+      return (
+        request.student_name.toLowerCase().includes(search) ||
+        request.student_email.toLowerCase().includes(search) ||
+        request.instagram_handle.toLowerCase().includes(search)
+      );
   });
+
 
   const pendingRequests = filteredRequests.filter(r => r.status === 'pending');
   const approvedRequests = filteredRequests.filter(r => r.status === 'approved');
@@ -87,17 +92,38 @@ export default function InstagramRequests() {
         {/* Search */}
         <Card>
           <CardContent className="p-6">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                placeholder="Buscar por nome, email ou Instagram..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
+            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+              {/* Campo de busca */}
+              <div className="relative w-full md:max-w-md">
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  placeholder="Buscar por nome, email ou Instagram..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+
+              {/* Filtro por status */}
+              <div className="w-full md:w-48">
+                <Select
+                  value={statusFilter}
+                  onValueChange={(value) => setStatusFilter(value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="pending">Pendente</SelectItem>
+                    <SelectItem value="approved">Aprovado</SelectItem>
+                    <SelectItem value="rejected">Rejeitado</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </CardContent>
         </Card>
+
 
         {/* Summary */}
         <div className="grid gap-4 md:grid-cols-4">

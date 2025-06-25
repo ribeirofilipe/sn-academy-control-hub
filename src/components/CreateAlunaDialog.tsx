@@ -57,17 +57,18 @@ export const CreateAlunaDialog = () => {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button className="flex items-center gap-2">
-          <Plus className="h-4 w-4" />
-          Adicionar Aluna
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="max-w-md">
-        <DialogHeader>
-          <DialogTitle>Adicionar Nova Aluna (Manual)</DialogTitle>
-        </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
+    <DialogTrigger asChild>
+      <Button className="flex items-center gap-2">
+        <Plus className="h-4 w-4" />
+        Adicionar Aluna
+      </Button>
+    </DialogTrigger>
+    <DialogContent className="max-w-2xl max-h-screen overflow-y-auto">
+      <DialogHeader>
+        <DialogTitle>Adicionar Nova Aluna (Manual)</DialogTitle>
+      </DialogHeader>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <Label htmlFor="nome">Nome *</Label>
             <Input
@@ -77,7 +78,7 @@ export const CreateAlunaDialog = () => {
               required
             />
           </div>
-
+  
           <div>
             <Label htmlFor="email">Email *</Label>
             <Input
@@ -88,7 +89,7 @@ export const CreateAlunaDialog = () => {
               required
             />
           </div>
-
+  
           <div>
             <Label htmlFor="telefone">Telefone</Label>
             <Input
@@ -97,7 +98,7 @@ export const CreateAlunaDialog = () => {
               onChange={(e) => setFormData({ ...formData, telefone: e.target.value })}
             />
           </div>
-
+  
           <div>
             <Label htmlFor="curso">Curso *</Label>
             <Input
@@ -107,7 +108,7 @@ export const CreateAlunaDialog = () => {
               required
             />
           </div>
-
+  
           <div>
             <Label htmlFor="valor">Valor *</Label>
             <Input
@@ -119,7 +120,7 @@ export const CreateAlunaDialog = () => {
               required
             />
           </div>
-
+  
           <div>
             <Label htmlFor="forma_pagamento">Forma de Pagamento</Label>
             <Select
@@ -137,7 +138,7 @@ export const CreateAlunaDialog = () => {
               </SelectContent>
             </Select>
           </div>
-
+  
           <div>
             <Label htmlFor="data_compra">Data da Compra *</Label>
             <Input
@@ -148,21 +149,22 @@ export const CreateAlunaDialog = () => {
               required
             />
           </div>
-
-          <div className="bg-blue-50 p-3 rounded-md text-sm text-blue-800">
-            <strong>Nota:</strong> Esta aluna será marcada como "Pagamento Manual" e aparecerá na aba "Gerenciar Pagamentos" para controle das parcelas.
-          </div>
-
-          <div className="flex justify-end gap-2 pt-4">
-            <Button type="button" variant="outline" onClick={() => setOpen(false)}>
-              Cancelar
-            </Button>
-            <Button type="submit" disabled={createAluna.isPending}>
-              {createAluna.isPending ? 'Salvando...' : 'Salvar'}
-            </Button>
-          </div>
-        </form>
-      </DialogContent>
-    </Dialog>
+        </div>
+  
+        <div className="bg-blue-50 p-3 rounded-md text-sm text-blue-800">
+          <strong>Nota:</strong> Esta aluna será marcada como "Pagamento Manual" e aparecerá na aba "Gerenciar Pagamentos" para controle das parcelas.
+        </div>
+  
+        <div className="flex justify-end gap-2 pt-4">
+          <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+            Cancelar
+          </Button>
+          <Button type="submit" disabled={createAluna.isPending}>
+            {createAluna.isPending ? 'Salvando...' : 'Salvar'}
+          </Button>
+        </div>
+      </form>
+    </DialogContent>
+  </Dialog>
   );
 };

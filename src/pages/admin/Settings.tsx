@@ -18,6 +18,7 @@ import {
   Shield,
   Palette
 } from 'lucide-react';
+import { Layout } from '@/components/Layout';
 
 export default function Settings() {
   const [webhookUrl, setWebhookUrl] = useState('https://api.snacademy.com/webhook/hotmart');
@@ -39,6 +40,7 @@ export default function Settings() {
   };
 
   return (
+    <Layout>
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Configurações</h1>
@@ -376,5 +378,6 @@ export default function Settings() {
         </TabsContent>
       </Tabs>
     </div>
+    </Layout>
   );
 }

@@ -37,7 +37,7 @@ export const AlunaFilters = ({ filters, onFiltersChange, onClearFilters }: Aluna
                 <SelectValue placeholder="Todos os cursos" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Todos os cursos</SelectItem>
+                <SelectItem value="all">Todos os cursos</SelectItem>
                 {cursos?.map((curso) => (
                   <SelectItem key={curso} value={curso}>
                     {curso}
