@@ -1581,494 +1581,459 @@ export type Database = {
         }
         Relationships: []
       }
-      orbit_analises_ia: {
+      nextlevel_exercises: {
         Row: {
-          confianca: number | null
-          conteudo: string
-          dados_analisados: Json | null
-          data_analise: string | null
+          category: string
+          created_at: string | null
+          equipment_type: string | null
           id: string
-          tipo: string
-          usuario_id: string
+          image_url: string | null
+          instructions: string[] | null
+          muscle_groups: string[]
+          name: string
+          tips: string[] | null
+          video_url: string | null
         }
         Insert: {
-          confianca?: number | null
-          conteudo: string
-          dados_analisados?: Json | null
-          data_analise?: string | null
+          category: string
+          created_at?: string | null
+          equipment_type?: string | null
           id?: string
-          tipo: string
-          usuario_id: string
+          image_url?: string | null
+          instructions?: string[] | null
+          muscle_groups: string[]
+          name: string
+          tips?: string[] | null
+          video_url?: string | null
         }
         Update: {
-          confianca?: number | null
-          conteudo?: string
-          dados_analisados?: Json | null
-          data_analise?: string | null
+          category?: string
+          created_at?: string | null
+          equipment_type?: string | null
           id?: string
-          tipo?: string
-          usuario_id?: string
+          image_url?: string | null
+          instructions?: string[] | null
+          muscle_groups?: string[]
+          name?: string
+          tips?: string[] | null
+          video_url?: string | null
+        }
+        Relationships: []
+      }
+      nextlevel_template_exercises: {
+        Row: {
+          description: string | null
+          exercise_id: string
+          id: string
+          order_index: number
+          reps: string
+          rest_time: number | null
+          sets: number
+          suggested_weight: number | null
+          template_id: string
+        }
+        Insert: {
+          description?: string | null
+          exercise_id: string
+          id?: string
+          order_index: number
+          reps: string
+          rest_time?: number | null
+          sets: number
+          suggested_weight?: number | null
+          template_id: string
+        }
+        Update: {
+          description?: string | null
+          exercise_id?: string
+          id?: string
+          order_index?: number
+          reps?: string
+          rest_time?: number | null
+          sets?: number
+          suggested_weight?: number | null
+          template_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "orbit_analises_ia_usuario_id_fkey"
-            columns: ["usuario_id"]
+            foreignKeyName: "nextlevel_template_exercises_exercise_id_fkey"
+            columns: ["exercise_id"]
             isOneToOne: false
-            referencedRelation: "orbit_usuarios"
+            referencedRelation: "nextlevel_exercises"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "nextlevel_template_exercises_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "nextlevel_workout_templates"
             referencedColumns: ["id"]
           },
         ]
       }
-      orbit_assinaturas: {
+      nextlevel_users: {
         Row: {
-          ativo: boolean
-          atualizado_em: string | null
-          criado_em: string | null
-          data_cancelamento: string | null
-          data_inicio: string
-          descricao: string
+          created_at: string | null
+          email: string | null
+          full_name: string | null
           id: string
-          recorrencia: string
-          tipo_conta: string
-          usuario_id: string
-          valor: number
+          subscription_type: string | null
+          updated_at: string | null
         }
         Insert: {
-          ativo?: boolean
-          atualizado_em?: string | null
-          criado_em?: string | null
-          data_cancelamento?: string | null
-          data_inicio: string
-          descricao: string
-          id?: string
-          recorrencia: string
-          tipo_conta: string
-          usuario_id: string
-          valor: number
+          created_at?: string | null
+          email?: string | null
+          full_name?: string | null
+          id: string
+          subscription_type?: string | null
+          updated_at?: string | null
         }
         Update: {
-          ativo?: boolean
-          atualizado_em?: string | null
-          criado_em?: string | null
-          data_cancelamento?: string | null
-          data_inicio?: string
-          descricao?: string
+          created_at?: string | null
+          email?: string | null
+          full_name?: string | null
           id?: string
-          recorrencia?: string
-          tipo_conta?: string
-          usuario_id?: string
-          valor?: number
+          subscription_type?: string | null
+          updated_at?: string | null
         }
         Relationships: []
       }
-      orbit_assinaturas_pagamentos: {
+      nextlevel_workout_exercises: {
         Row: {
-          assinatura_id: string
-          atualizado_em: string | null
-          criado_em: string | null
-          data_pagamento: string | null
-          data_vencimento: string
+          exercise_id: string
           id: string
-          observacoes: string | null
-          status_pagamento: string | null
-          valor: number
+          order_index: number
+          workout_id: string
         }
         Insert: {
-          assinatura_id: string
-          atualizado_em?: string | null
-          criado_em?: string | null
-          data_pagamento?: string | null
-          data_vencimento: string
+          exercise_id: string
           id?: string
-          observacoes?: string | null
-          status_pagamento?: string | null
-          valor: number
+          order_index: number
+          workout_id: string
         }
         Update: {
-          assinatura_id?: string
-          atualizado_em?: string | null
-          criado_em?: string | null
-          data_pagamento?: string | null
+          exercise_id?: string
+          id?: string
+          order_index?: number
+          workout_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "nextlevel_workout_exercises_exercise_id_fkey"
+            columns: ["exercise_id"]
+            isOneToOne: false
+            referencedRelation: "nextlevel_exercises"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "nextlevel_workout_exercises_workout_id_fkey"
+            columns: ["workout_id"]
+            isOneToOne: false
+            referencedRelation: "nextlevel_workouts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      nextlevel_workout_sets: {
+        Row: {
+          completed: boolean | null
+          created_at: string | null
+          id: string
+          reps: number
+          rpe: number | null
+          set_number: number
+          weight: number
+          workout_exercise_id: string
+        }
+        Insert: {
+          completed?: boolean | null
+          created_at?: string | null
+          id?: string
+          reps: number
+          rpe?: number | null
+          set_number: number
+          weight: number
+          workout_exercise_id: string
+        }
+        Update: {
+          completed?: boolean | null
+          created_at?: string | null
+          id?: string
+          reps?: number
+          rpe?: number | null
+          set_number?: number
+          weight?: number
+          workout_exercise_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "nextlevel_workout_sets_workout_exercise_id_fkey"
+            columns: ["workout_exercise_id"]
+            isOneToOne: false
+            referencedRelation: "nextlevel_workout_exercises"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      nextlevel_workout_templates: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          name: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "nextlevel_workout_templates_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "nextlevel_users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      nextlevel_workouts: {
+        Row: {
+          completed: boolean | null
+          created_at: string | null
+          date: string
+          duration: number | null
+          id: string
+          notes: string | null
+          template_id: string | null
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean | null
+          created_at?: string | null
+          date?: string
+          duration?: number | null
+          id?: string
+          notes?: string | null
+          template_id?: string | null
+          user_id: string
+        }
+        Update: {
+          completed?: boolean | null
+          created_at?: string | null
+          date?: string
+          duration?: number | null
+          id?: string
+          notes?: string | null
+          template_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "nextlevel_workouts_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "nextlevel_workout_templates"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "nextlevel_workouts_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "nextlevel_users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orbit_account_balance: {
+        Row: {
+          banco: string
+          created_at: string
+          id: string
+          nome_conta: string
+          saldo: number
+          tipo_conta: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          banco: string
+          created_at?: string
+          id?: string
+          nome_conta: string
+          saldo?: number
+          tipo_conta?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          banco?: string
+          created_at?: string
+          id?: string
+          nome_conta?: string
+          saldo?: number
+          tipo_conta?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      orbit_cards: {
+        Row: {
+          bandeira: string
+          created_at: string
+          cvv: string
+          data_vencimento: string
+          id: string
+          nome_cartao: string
+          numero_cartao: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          bandeira: string
+          created_at?: string
+          cvv: string
+          data_vencimento: string
+          id?: string
+          nome_cartao: string
+          numero_cartao: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          bandeira?: string
+          created_at?: string
+          cvv?: string
           data_vencimento?: string
           id?: string
-          observacoes?: string | null
-          status_pagamento?: string | null
-          valor?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "orbit_assinaturas_pagamentos_assinatura_id_fkey"
-            columns: ["assinatura_id"]
-            isOneToOne: false
-            referencedRelation: "orbit_assinaturas"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      orbit_cartoes: {
-        Row: {
-          atualizado_em: string
-          conta_id: string
-          criado_em: string
-          data_fechamento: number | null
-          data_vencimento: number | null
-          id: string
-          limite_credito: number
-          nome_cartao: string
-          observacoes: string | null
-        }
-        Insert: {
-          atualizado_em?: string
-          conta_id: string
-          criado_em?: string
-          data_fechamento?: number | null
-          data_vencimento?: number | null
-          id?: string
-          limite_credito?: number
-          nome_cartao: string
-          observacoes?: string | null
-        }
-        Update: {
-          atualizado_em?: string
-          conta_id?: string
-          criado_em?: string
-          data_fechamento?: number | null
-          data_vencimento?: number | null
-          id?: string
-          limite_credito?: number
           nome_cartao?: string
-          observacoes?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "orbit_cartoes_conta_id_fkey"
-            columns: ["conta_id"]
-            isOneToOne: false
-            referencedRelation: "orbit_contas"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      orbit_categorias: {
-        Row: {
-          atualizado_em: string
-          cor: string | null
-          criado_em: string
-          id: string
-          nome: string
-          tipo: string
-          usuario_id: string | null
-        }
-        Insert: {
-          atualizado_em?: string
-          cor?: string | null
-          criado_em?: string
-          id?: string
-          nome: string
-          tipo: string
-          usuario_id?: string | null
-        }
-        Update: {
-          atualizado_em?: string
-          cor?: string | null
-          criado_em?: string
-          id?: string
-          nome?: string
-          tipo?: string
-          usuario_id?: string | null
-        }
-        Relationships: []
-      }
-      orbit_configuracoes_notificacoes: {
-        Row: {
-          ativo: boolean | null
-          atualizado_em: string | null
-          canais: Json | null
-          categoria: string | null
-          criado_em: string | null
-          dias_antecedencia: number | null
-          id: string
-          tipo: string
-          usuario_id: string
-          valor_limite: number | null
-        }
-        Insert: {
-          ativo?: boolean | null
-          atualizado_em?: string | null
-          canais?: Json | null
-          categoria?: string | null
-          criado_em?: string | null
-          dias_antecedencia?: number | null
-          id?: string
-          tipo: string
-          usuario_id: string
-          valor_limite?: number | null
-        }
-        Update: {
-          ativo?: boolean | null
-          atualizado_em?: string | null
-          canais?: Json | null
-          categoria?: string | null
-          criado_em?: string | null
-          dias_antecedencia?: number | null
-          id?: string
-          tipo?: string
-          usuario_id?: string
-          valor_limite?: number | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "orbit_configuracoes_notificacoes_usuario_id_fkey"
-            columns: ["usuario_id"]
-            isOneToOne: false
-            referencedRelation: "orbit_usuarios"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      orbit_contas: {
-        Row: {
-          atualizado_em: string
-          criado_em: string
-          id: string
-          nome_banco: string
-          observacoes: string | null
-          saldo_atual: number
-          tipo_conta: string
-          usuario_id: string
-        }
-        Insert: {
-          atualizado_em?: string
-          criado_em?: string
-          id?: string
-          nome_banco: string
-          observacoes?: string | null
-          saldo_atual?: number
-          tipo_conta: string
-          usuario_id: string
-        }
-        Update: {
-          atualizado_em?: string
-          criado_em?: string
-          id?: string
-          nome_banco?: string
-          observacoes?: string | null
-          saldo_atual?: number
-          tipo_conta?: string
-          usuario_id?: string
+          numero_cartao?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
       orbit_despesas: {
         Row: {
-          atualizado_em: string
-          cartao_id: string | null
           categoria: string
-          conta_id: string | null
-          criado_em: string
+          created_at: string
           data_vencimento: string
-          descricao: string | null
+          descricao: string
           id: string
-          observacoes: string | null
-          pago: boolean | null
-          recorrencia: string | null
-          repeticoes: number | null
+          recorrencia: string
+          recorrente_id: string | null
+          status: string
           tipo: string
-          tipo_conta: string
-          usuario_id: string
+          updated_at: string
+          user_id: string
           valor: number
         }
         Insert: {
-          atualizado_em?: string
-          cartao_id?: string | null
           categoria: string
-          conta_id?: string | null
-          criado_em?: string
+          created_at?: string
           data_vencimento: string
-          descricao?: string | null
+          descricao: string
           id?: string
-          observacoes?: string | null
-          pago?: boolean | null
-          recorrencia?: string | null
-          repeticoes?: number | null
+          recorrencia?: string
+          recorrente_id?: string | null
+          status?: string
           tipo: string
-          tipo_conta: string
-          usuario_id: string
+          updated_at?: string
+          user_id: string
           valor: number
         }
         Update: {
-          atualizado_em?: string
-          cartao_id?: string | null
           categoria?: string
-          conta_id?: string | null
-          criado_em?: string
+          created_at?: string
           data_vencimento?: string
-          descricao?: string | null
-          id?: string
-          observacoes?: string | null
-          pago?: boolean | null
-          recorrencia?: string | null
-          repeticoes?: number | null
-          tipo?: string
-          tipo_conta?: string
-          usuario_id?: string
-          valor?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "orbit_despesas_cartao_id_fkey"
-            columns: ["cartao_id"]
-            isOneToOne: false
-            referencedRelation: "orbit_cartoes"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "orbit_despesas_conta_id_fkey"
-            columns: ["conta_id"]
-            isOneToOne: false
-            referencedRelation: "orbit_contas"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      orbit_dividas: {
-        Row: {
-          atualizado_em: string | null
-          criado_em: string | null
-          data_inicio: string
-          data_vencimento_proxima: string
-          descricao: string
-          id: string
-          parcelas_pagas: number | null
-          parcelas_total: number
-          taxa_juros: number | null
-          tipo_conta: string | null
-          usuario_id: string
-          valor_parcela: number
-          valor_total: number
-        }
-        Insert: {
-          atualizado_em?: string | null
-          criado_em?: string | null
-          data_inicio: string
-          data_vencimento_proxima: string
-          descricao: string
-          id?: string
-          parcelas_pagas?: number | null
-          parcelas_total: number
-          taxa_juros?: number | null
-          tipo_conta?: string | null
-          usuario_id: string
-          valor_parcela: number
-          valor_total: number
-        }
-        Update: {
-          atualizado_em?: string | null
-          criado_em?: string | null
-          data_inicio?: string
-          data_vencimento_proxima?: string
           descricao?: string
           id?: string
-          parcelas_pagas?: number | null
-          parcelas_total?: number
-          taxa_juros?: number | null
-          tipo_conta?: string | null
-          usuario_id?: string
-          valor_parcela?: number
-          valor_total?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "orbit_dividas_usuario_id_fkey"
-            columns: ["usuario_id"]
-            isOneToOne: false
-            referencedRelation: "orbit_usuarios"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      orbit_lembretes: {
-        Row: {
-          atualizado_em: string
-          criado_em: string
-          data_lembrete: string
-          descricao: string | null
-          id: string
-          recorrente: boolean | null
-          titulo: string
-          usuario_id: string
-        }
-        Insert: {
-          atualizado_em?: string
-          criado_em?: string
-          data_lembrete: string
-          descricao?: string | null
-          id?: string
-          recorrente?: boolean | null
-          titulo: string
-          usuario_id: string
-        }
-        Update: {
-          atualizado_em?: string
-          criado_em?: string
-          data_lembrete?: string
-          descricao?: string | null
-          id?: string
-          recorrente?: boolean | null
-          titulo?: string
-          usuario_id?: string
+          recorrencia?: string
+          recorrente_id?: string | null
+          status?: string
+          tipo?: string
+          updated_at?: string
+          user_id?: string
+          valor?: number
         }
         Relationships: []
       }
-      orbit_metas_financeiras: {
+      orbit_metas: {
         Row: {
-          ativa: boolean | null
-          atualizado_em: string | null
-          categoria: string | null
-          criado_em: string | null
-          data_limite: string
+          ano: number
+          categoria: string
+          created_at: string
           id: string
-          tipo_conta: string | null
-          titulo: string
-          usuario_id: string
-          valor_atual: number | null
-          valor_meta: number
+          mes: number
+          tipo: string
+          updated_at: string
+          user_id: string
+          valor_limite: number
         }
         Insert: {
-          ativa?: boolean | null
-          atualizado_em?: string | null
-          categoria?: string | null
-          criado_em?: string | null
-          data_limite: string
+          ano: number
+          categoria: string
+          created_at?: string
           id?: string
-          tipo_conta?: string | null
-          titulo: string
-          usuario_id: string
-          valor_atual?: number | null
-          valor_meta: number
+          mes: number
+          tipo: string
+          updated_at?: string
+          user_id: string
+          valor_limite: number
         }
         Update: {
-          ativa?: boolean | null
-          atualizado_em?: string | null
-          categoria?: string | null
-          criado_em?: string | null
-          data_limite?: string
+          ano?: number
+          categoria?: string
+          created_at?: string
           id?: string
-          tipo_conta?: string | null
-          titulo?: string
-          usuario_id?: string
-          valor_atual?: number | null
-          valor_meta?: number
+          mes?: number
+          tipo?: string
+          updated_at?: string
+          user_id?: string
+          valor_limite?: number
         }
-        Relationships: [
-          {
-            foreignKeyName: "orbit_metas_financeiras_usuario_id_fkey"
-            columns: ["usuario_id"]
-            isOneToOne: false
-            referencedRelation: "orbit_usuarios"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
+      }
+      orbit_profiles: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          nome: string | null
+          tipo: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id: string
+          nome?: string | null
+          tipo?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          nome?: string | null
+          tipo?: string | null
+          updated_at?: string
+        }
+        Relationships: []
       }
       orbit_receitas: {
         Row: {
@@ -2109,83 +2074,6 @@ export type Database = {
           tipo_conta?: string
           usuario_id?: string
           valor?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "orbit_receitas_conta_id_fkey"
-            columns: ["conta_id"]
-            isOneToOne: false
-            referencedRelation: "orbit_contas"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      orbit_usuario_provider: {
-        Row: {
-          access_token: string | null
-          created_at: string | null
-          id: number
-          provider_name: string
-          provider_user_id: string
-          refresh_token: string | null
-          token_expires_at: string | null
-          updated_at: string | null
-          usuario_id: string
-        }
-        Insert: {
-          access_token?: string | null
-          created_at?: string | null
-          id?: number
-          provider_name: string
-          provider_user_id: string
-          refresh_token?: string | null
-          token_expires_at?: string | null
-          updated_at?: string | null
-          usuario_id: string
-        }
-        Update: {
-          access_token?: string | null
-          created_at?: string | null
-          id?: number
-          provider_name?: string
-          provider_user_id?: string
-          refresh_token?: string | null
-          token_expires_at?: string | null
-          updated_at?: string | null
-          usuario_id?: string
-        }
-        Relationships: []
-      }
-      orbit_usuarios: {
-        Row: {
-          atualizado_em: string | null
-          criado_em: string | null
-          email: string
-          google_id: string | null
-          id: string
-          nome: string
-          senha_hash: string
-          tipo_autenticacao: string
-        }
-        Insert: {
-          atualizado_em?: string | null
-          criado_em?: string | null
-          email: string
-          google_id?: string | null
-          id?: string
-          nome: string
-          senha_hash: string
-          tipo_autenticacao?: string
-        }
-        Update: {
-          atualizado_em?: string | null
-          criado_em?: string | null
-          email?: string
-          google_id?: string | null
-          id?: string
-          nome?: string
-          senha_hash?: string
-          tipo_autenticacao?: string
         }
         Relationships: []
       }
