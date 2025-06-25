@@ -23,14 +23,28 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
 import { useInstagramRequests, useApproveInstagramRequest } from '@/hooks/useInstagramRequests';
 
 export default function InstagramRequests() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedRequest, setSelectedRequest] = useState<any>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
   
-  const { data: instagramRequests = [], isLoading, refetch } = useInstagramRequests();
+  const { data: requestsData, isLoading, refetch } = useInstagramRequests(currentPage, pageSize);
   const approveMutation = useApproveInstagramRequest();
+
+  const instagramRequests = requestsData?.data || [];
+  const totalPages = requestsData?.totalPages || 1;
 
   const filteredRequests = instagramRequests.filter((request) => {
     const matchesSearch = 
@@ -62,6 +76,10 @@ export default function InstagramRequests() {
 
   const getInitials = (name: string) => {
     return name.split(' ').map(n => n[0]).join('').toUpperCase();
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
   };
 
   if (isLoading) {
@@ -144,182 +162,219 @@ export default function InstagramRequests() {
                 Nenhuma solicitação encontrada
               </div>
             ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Aluna</TableHead>
-                    <TableHead>Instagram</TableHead>
-                    <TableHead>Curso</TableHead>
-                    <TableHead>Data Solicitação</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Ações</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredRequests.map((request) => (
-                    <TableRow key={request.id}>
-                      <TableCell>
-                        <div className="flex items-center gap-3">
-                          <Avatar className="h-8 w-8">
-                            <AvatarImage src="" />
-                            <AvatarFallback className="bg-primary/10">
-                              {getInitials(request.student_name)}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div>
-                            <div className="font-medium">{request.student_name}</div>
-                            <div className="text-sm text-muted-foreground">
-                              {request.student_email}
+              <>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Aluna</TableHead>
+                      <TableHead>Instagram</TableHead>
+                      <TableHead>Curso</TableHead>
+                      <TableHead>Data Solicitação</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead className="text-right">Ações</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredRequests.map((request) => (
+                      <TableRow key={request.id}>
+                        <TableCell>
+                          <div className="flex items-center gap-3">
+                            <Avatar className="h-8 w-8">
+                              <AvatarImage src="" />
+                              <AvatarFallback className="bg-primary/10">
+                                {getInitials(request.student_name)}
+                              </AvatarFallback>
+                            </Avatar>
+                            <div>
+                              <div className="font-medium">{request.student_name}</div>
+                              <div className="text-sm text-muted-foreground">
+                                {request.student_email}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <InstagramIcon className="h-4 w-4 text-pink-600" />
-                          <span className="font-medium">{request.instagram_handle}</span>
-                          {request.instagram_url && (
-                            <Button variant="ghost" size="sm" asChild>
-                              <a href={request.instagram_url} target="_blank" rel="noopener noreferrer">
-                                <ExternalLink className="h-3 w-3" />
-                              </a>
-                            </Button>
-                          )}
-                        </div>
-                      </TableCell>
-                      <TableCell>{request.course || '-'}</TableCell>
-                      <TableCell>
-                        {new Date(request.request_date).toLocaleDateString('pt-BR', {
-                          day: '2-digit',
-                          month: '2-digit',
-                          year: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit'
-                        })}
-                      </TableCell>
-                      <TableCell>
-                        <StatusBadge status={request.status}>
-                          {request.status === 'pending' ? 'Pendente' :
-                           request.status === 'approved' ? 'Aprovado' : 'Rejeitado'}
-                        </StatusBadge>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex justify-end gap-2">
-                          {request.status === 'pending' && (
-                            <>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => handleApproval(request.id, 'approve')}
-                                className="text-success hover:text-success hover:bg-success/10"
-                                disabled={approveMutation.isPending}
-                              >
-                                <CheckCircle className="h-4 w-4" />
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <InstagramIcon className="h-4 w-4 text-pink-600" />
+                            <span className="font-medium">{request.instagram_handle}</span>
+                            {request.instagram_url && (
+                              <Button variant="ghost" size="sm" asChild>
+                                <a href={request.instagram_url} target="_blank" rel="noopener noreferrer">
+                                  <ExternalLink className="h-3 w-3" />
+                                </a>
                               </Button>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => handleApproval(request.id, 'reject')}
-                                className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                                disabled={approveMutation.isPending}
-                              >
-                                <XCircle className="h-4 w-4" />
-                              </Button>
-                            </>
-                          )}
-                          <Dialog>
-                            <DialogTrigger asChild>
-                              <Button 
-                                variant="ghost" 
-                                size="sm" 
-                                onClick={() => setSelectedRequest(request)}
-                              >
-                                <ExternalLink className="h-4 w-4" />
-                              </Button>
-                            </DialogTrigger>
-                            <DialogContent>
-                              <DialogHeader>
-                                <DialogTitle>Detalhes da Solicitação</DialogTitle>
-                                <DialogDescription>
-                                  Informações completas da solicitação de acesso
-                                </DialogDescription>
-                              </DialogHeader>
-                              {selectedRequest && (
-                                <div className="space-y-4">
-                                  <div className="flex items-center gap-3">
-                                    <Avatar className="h-12 w-12">
-                                      <AvatarFallback className="bg-primary/10">
-                                        {getInitials(selectedRequest.student_name)}
-                                      </AvatarFallback>
-                                    </Avatar>
-                                    <div>
-                                      <h4 className="font-medium">{selectedRequest.student_name}</h4>
-                                      <p className="text-sm text-muted-foreground">{selectedRequest.student_email}</p>
-                                    </div>
-                                  </div>
-                                  
-                                  <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                      <label className="text-sm font-medium">Instagram</label>
-                                      <div className="flex items-center gap-2 mt-1">
-                                        <InstagramIcon className="h-4 w-4 text-pink-600" />
-                                        <span>{selectedRequest.instagram_handle}</span>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell>{request.course || '-'}</TableCell>
+                        <TableCell>
+                          {new Date(request.request_date).toLocaleDateString('pt-BR', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}
+                        </TableCell>
+                        <TableCell>
+                          <StatusBadge status={request.status}>
+                            {request.status === 'pending' ? 'Pendente' :
+                             request.status === 'approved' ? 'Aprovado' : 'Rejeitado'}
+                          </StatusBadge>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex justify-end gap-2">
+                            {request.status === 'pending' && (
+                              <>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => handleApproval(request.id, 'approve')}
+                                  className="text-success hover:text-success hover:bg-success/10"
+                                  disabled={approveMutation.isPending}
+                                >
+                                  <CheckCircle className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => handleApproval(request.id, 'reject')}
+                                  className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                                  disabled={approveMutation.isPending}
+                                >
+                                  <XCircle className="h-4 w-4" />
+                                </Button>
+                              </>
+                            )}
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <Button 
+                                  variant="ghost" 
+                                  size="sm" 
+                                  onClick={() => setSelectedRequest(request)}
+                                >
+                                  <ExternalLink className="h-4 w-4" />
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent>
+                                <DialogHeader>
+                                  <DialogTitle>Detalhes da Solicitação</DialogTitle>
+                                  <DialogDescription>
+                                    Informações completas da solicitação de acesso
+                                  </DialogDescription>
+                                </DialogHeader>
+                                {selectedRequest && (
+                                  <div className="space-y-4">
+                                    <div className="flex items-center gap-3">
+                                      <Avatar className="h-12 w-12">
+                                        <AvatarFallback className="bg-primary/10">
+                                          {getInitials(selectedRequest.student_name)}
+                                        </AvatarFallback>
+                                      </Avatar>
+                                      <div>
+                                        <h4 className="font-medium">{selectedRequest.student_name}</h4>
+                                        <p className="text-sm text-muted-foreground">{selectedRequest.student_email}</p>
                                       </div>
                                     </div>
+                                    
+                                    <div className="grid grid-cols-2 gap-4">
+                                      <div>
+                                        <label className="text-sm font-medium">Instagram</label>
+                                        <div className="flex items-center gap-2 mt-1">
+                                          <InstagramIcon className="h-4 w-4 text-pink-600" />
+                                          <span>{selectedRequest.instagram_handle}</span>
+                                        </div>
+                                      </div>
+                                      <div>
+                                        <label className="text-sm font-medium">Curso</label>
+                                        <p className="mt-1">{selectedRequest.course || '-'}</p>
+                                      </div>
+                                    </div>
+
+                                    {selectedRequest.message && (
+                                      <div>
+                                        <label className="text-sm font-medium">Mensagem</label>
+                                        <p className="mt-1 text-sm text-muted-foreground">{selectedRequest.message}</p>
+                                      </div>
+                                    )}
+
                                     <div>
-                                      <label className="text-sm font-medium">Curso</label>
-                                      <p className="mt-1">{selectedRequest.course || '-'}</p>
+                                      <label className="text-sm font-medium">Status</label>
+                                      <div className="mt-1">
+                                        <StatusBadge status={selectedRequest.status}>
+                                          {selectedRequest.status === 'pending' ? 'Pendente' :
+                                           selectedRequest.status === 'approved' ? 'Aprovado' : 'Rejeitado'}
+                                        </StatusBadge>
+                                      </div>
                                     </div>
+
+                                    {selectedRequest.status === 'pending' && (
+                                      <div className="flex gap-2 pt-4">
+                                        <Button
+                                          onClick={() => handleApproval(selectedRequest.id, 'approve')}
+                                          className="flex-1"
+                                          disabled={approveMutation.isPending}
+                                        >
+                                          <CheckCircle className="h-4 w-4 mr-2" />
+                                          Aprovar
+                                        </Button>
+                                        <Button
+                                          variant="destructive"
+                                          onClick={() => handleApproval(selectedRequest.id, 'reject')}
+                                          className="flex-1"
+                                          disabled={approveMutation.isPending}
+                                        >
+                                          <XCircle className="h-4 w-4 mr-2" />
+                                          Rejeitar
+                                        </Button>
+                                      </div>
+                                    )}
                                   </div>
+                                )}
+                              </DialogContent>
+                            </Dialog>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
 
-                                  {selectedRequest.message && (
-                                    <div>
-                                      <label className="text-sm font-medium">Mensagem</label>
-                                      <p className="mt-1 text-sm text-muted-foreground">{selectedRequest.message}</p>
-                                    </div>
-                                  )}
-
-                                  <div>
-                                    <label className="text-sm font-medium">Status</label>
-                                    <div className="mt-1">
-                                      <StatusBadge status={selectedRequest.status}>
-                                        {selectedRequest.status === 'pending' ? 'Pendente' :
-                                         selectedRequest.status === 'approved' ? 'Aprovado' : 'Rejeitado'}
-                                      </StatusBadge>
-                                    </div>
-                                  </div>
-
-                                  {selectedRequest.status === 'pending' && (
-                                    <div className="flex gap-2 pt-4">
-                                      <Button
-                                        onClick={() => handleApproval(selectedRequest.id, 'approve')}
-                                        className="flex-1"
-                                        disabled={approveMutation.isPending}
-                                      >
-                                        <CheckCircle className="h-4 w-4 mr-2" />
-                                        Aprovar
-                                      </Button>
-                                      <Button
-                                        variant="destructive"
-                                        onClick={() => handleApproval(selectedRequest.id, 'reject')}
-                                        className="flex-1"
-                                        disabled={approveMutation.isPending}
-                                      >
-                                        <XCircle className="h-4 w-4 mr-2" />
-                                        Rejeitar
-                                      </Button>
-                                    </div>
-                                  )}
-                                </div>
-                              )}
-                            </DialogContent>
-                          </Dialog>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <div className="flex justify-center mt-6">
+                    <Pagination>
+                      <PaginationContent>
+                        <PaginationItem>
+                          <PaginationPrevious 
+                            onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+                            className={currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                          />
+                        </PaginationItem>
+                        
+                        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                          <PaginationItem key={page}>
+                            <PaginationLink
+                              onClick={() => handlePageChange(page)}
+                              isActive={currentPage === page}
+                              className="cursor-pointer"
+                            >
+                              {page}
+                            </PaginationLink>
+                          </PaginationItem>
+                        ))}
+                        
+                        <PaginationItem>
+                          <PaginationNext 
+                            onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
+                            className={currentPage === totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                          />
+                        </PaginationItem>
+                      </PaginationContent>
+                    </Pagination>
+                  </div>
+                )}
+              </>
             )}
           </CardContent>
         </Card>

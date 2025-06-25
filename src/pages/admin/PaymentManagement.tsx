@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Layout } from '@/components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,14 +6,26 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PaymentManagementDialog } from '@/components/PaymentManagementDialog';
-import { useAlunasPagamentoManual, usePagamentosManuais, useUpdatePagamento } from '@/hooks/usePayments';
+import { useAlunasPagamentoManual, usePagamentosManuais, useUpdatePagamento, useDeletePagamento } from '@/hooks/usePayments';
 import { toast } from 'sonner';
-import { CreditCard, DollarSign, Calendar, AlertCircle, MessageSquare } from 'lucide-react';
+import { CreditCard, DollarSign, Calendar, AlertCircle, MessageSquare, Trash2 } from 'lucide-react';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 const PaymentManagement = () => {
   const { data: alunas = [], isLoading: loadingAlunas } = useAlunasPagamentoManual();
   const { data: pagamentos = [], isLoading: loadingPagamentos } = usePagamentosManuais();
   const updatePagamento = useUpdatePagamento();
+  const deletePagamento = useDeletePagamento();
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('pt-BR', {
@@ -53,6 +64,15 @@ const PaymentManagement = () => {
       toast.success('Pagamento marcado como pago!');
     } catch (error) {
       toast.error('Erro ao atualizar pagamento');
+    }
+  };
+
+  const handleDeleteParcela = async (pagamentoId: string) => {
+    try {
+      await deletePagamento.mutateAsync(pagamentoId);
+      toast.success('Parcela deletada com sucesso!');
+    } catch (error) {
+      toast.error('Erro ao deletar parcela');
     }
   };
 
@@ -255,6 +275,36 @@ const PaymentManagement = () => {
                                   <MessageSquare className="h-3 w-3" />
                                   WhatsApp
                                 </Button>
+                                <AlertDialog>
+                                  <AlertDialogTrigger asChild>
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      className="text-destructive hover:text-destructive hover:bg-destructive/10 flex items-center gap-1"
+                                    >
+                                      <Trash2 className="h-3 w-3" />
+                                      Deletar
+                                    </Button>
+                                  </AlertDialogTrigger>
+                                  <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                      <AlertDialogTitle>Deletar Parcela</AlertDialogTitle>
+                                      <AlertDialogDescription>
+                                        Tem certeza que deseja deletar esta parcela? Esta ação não pode ser desfeita.
+                                      </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                      <AlertDialogAction
+                                        onClick={() => handleDeleteParcela(pagamento.id)}
+                                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                        disabled={deletePagamento.isPending}
+                                      >
+                                        Deletar
+                                      </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                  </AlertDialogContent>
+                                </AlertDialog>
                               </div>
                             </TableCell>
                           </TableRow>
