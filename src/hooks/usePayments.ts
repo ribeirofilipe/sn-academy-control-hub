@@ -85,3 +85,21 @@ export const useUpdatePagamento = () => {
     },
   });
 };
+
+export const useDeletePagamento = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase
+        .from('pagamentos_manuais')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['pagamentos-manuais'] });
+    },
+  });
+};

@@ -17,21 +17,29 @@ export interface InstagramRequest {
   updated_at: string;
 }
 
-export const useInstagramRequests = () => {
+export const useInstagramRequests = (page: number = 1, pageSize: number = 10) => {
   return useQuery({
-    queryKey: ['instagram-requests'],
+    queryKey: ['instagram-requests', page, pageSize],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const from = (page - 1) * pageSize;
+      const to = from + pageSize - 1;
+
+      const { data, error, count } = await supabase
         .from('instagram_requests')
-        .select('*')
-        .order('request_date', { ascending: false });
+        .select('*', { count: 'exact' })
+        .order('request_date', { ascending: false })
+        .range(from, to);
 
       if (error) {
         console.error('Error fetching instagram requests:', error);
         throw error;
       }
 
-      return data as InstagramRequest[];
+      return {
+        data: data as InstagramRequest[],
+        count: count || 0,
+        totalPages: Math.ceil((count || 0) / pageSize)
+      };
     },
   });
 };
