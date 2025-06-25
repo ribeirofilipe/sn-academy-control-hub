@@ -1494,6 +1494,59 @@ export type Database = {
         }
         Relationships: []
       }
+      instagram_requests: {
+        Row: {
+          aluna_id: string | null
+          course: string | null
+          created_at: string
+          id: string
+          instagram_handle: string
+          instagram_url: string | null
+          message: string | null
+          request_date: string
+          status: string
+          student_email: string
+          student_name: string
+          updated_at: string
+        }
+        Insert: {
+          aluna_id?: string | null
+          course?: string | null
+          created_at?: string
+          id?: string
+          instagram_handle: string
+          instagram_url?: string | null
+          message?: string | null
+          request_date?: string
+          status?: string
+          student_email: string
+          student_name: string
+          updated_at?: string
+        }
+        Update: {
+          aluna_id?: string | null
+          course?: string | null
+          created_at?: string
+          id?: string
+          instagram_handle?: string
+          instagram_url?: string | null
+          message?: string | null
+          request_date?: string
+          status?: string
+          student_email?: string
+          student_name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "instagram_requests_aluna_id_fkey"
+            columns: ["aluna_id"]
+            isOneToOne: false
+            referencedRelation: "alunas_hotmart"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       leads_form: {
         Row: {
           additional_info: string | null
