@@ -1,144 +1,94 @@
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { useAuth } from '@/contexts/AuthContext';
-import { useLocation, useNavigate } from 'react-router-dom';
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarHeader,
-  SidebarFooter,
-} from '@/components/ui/sidebar';
+
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   LayoutDashboard,
   Users,
   DollarSign,
   Instagram,
   Settings,
-  LogOut,
-  GraduationCap
-} from 'lucide-react';
+  CreditCard,
+} from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 
-const adminMenuItems = [
+const adminNavItems = [
   {
-    title: 'Dashboard',
-    url: '/admin/dashboard',
+    title: "Dashboard",
+    href: "/admin/dashboard",
     icon: LayoutDashboard,
   },
   {
-    title: 'Vendas',
-    url: '/admin/sales',
-    icon: DollarSign,
-  },
-  {
-    title: 'Alunas',
-    url: '/admin/students',
+    title: "Alunas",
+    href: "/admin/students",
     icon: Users,
   },
   {
-    title: 'Solicitações Instagram',
-    url: '/admin/instagram-requests',
+    title: "Vendas",
+    href: "/admin/sales",
+    icon: DollarSign,
+  },
+  {
+    title: "Gerenciar Pagamentos",
+    href: "/admin/payment-management",
+    icon: CreditCard,
+  },
+  {
+    title: "Solicitações Instagram",
+    href: "/admin/instagram-requests",
     icon: Instagram,
   },
   {
-    title: 'Configurações',
-    url: '/admin/settings',
+    title: "Configurações",
+    href: "/admin/settings",
     icon: Settings,
   },
 ];
 
-const studentMenuItems = [
+const studentNavItems = [
   {
-    title: 'Minha Área',
-    url: '/student/dashboard',
-    icon: GraduationCap,
+    title: "Dashboard",
+    href: "/student/dashboard",
+    icon: LayoutDashboard,
   },
 ];
 
-export function AppSidebar() {
-  const { user, logout } = useAuth();
+export const Sidebar = () => {
   const location = useLocation();
-  const navigate = useNavigate();
-
-  const menuItems = user?.role === 'ADMIN' ? adminMenuItems : studentMenuItems;
-
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
-
-  if (!user) return null;
+  const { user } = useAuth();
+  
+  const navItems = user?.role === 'ADMIN' ? adminNavItems : studentNavItems;
 
   return (
-    <Sidebar>
-      <SidebarHeader className="border-b border-sidebar-border p-4">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <GraduationCap className="h-6 w-6" />
-          </div>
-          <div>
-            <h1 className="text-lg font-semibold text-sidebar-foreground">SN Academy</h1>
-            <p className="text-sm text-sidebar-foreground/60">
-              {user.role === 'ADMIN' ? 'Área Administrativa' : 'Área da Aluna'}
-            </p>
-          </div>
-        </div>
-      </SidebarHeader>
-
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>Menu Principal</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {menuItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={location.pathname === item.url}
-                  >
-                    <a href={item.url} className="flex items-center gap-3">
-                      <item.icon className="h-4 w-4" />
-                      <span>{item.title}</span>
-                    </a>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
+    <div className="pb-12 w-64">
+      <div className="space-y-4 py-4">
+        <div className="px-3 py-2">
+          <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">
+            SN Resina
+          </h2>
+          <ScrollArea className="h-[300px] px-1">
+            <div className="space-y-1">
+              {navItems.map((item) => (
+                <Button
+                  key={item.href}
+                  variant={location.pathname === item.href ? "secondary" : "ghost"}
+                  className={cn(
+                    "w-full justify-start",
+                    location.pathname === item.href && "bg-secondary"
+                  )}
+                  asChild
+                >
+                  <Link to={item.href}>
+                    <item.icon className="mr-2 h-4 w-4" />
+                    {item.title}
+                  </Link>
+                </Button>
               ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
-
-      <SidebarFooter className="border-t border-sidebar-border p-4">
-        <div className="flex items-center gap-3 mb-3">
-          <img
-            src={user.avatar || `https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=40&h=40&fit=crop&crop=face`}
-            alt={user.name}
-            className="h-8 w-8 rounded-full object-cover"
-          />
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-sidebar-foreground truncate">
-              {user.name}
-            </p>
-            <p className="text-xs text-sidebar-foreground/60 truncate">
-              {user.email}
-            </p>
-          </div>
+            </div>
+          </ScrollArea>
         </div>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handleLogout}
-          className="w-full justify-start text-sidebar-foreground hover:bg-sidebar-accent"
-        >
-          <LogOut className="h-4 w-4 mr-2" />
-          Sair
-        </Button>
-      </SidebarFooter>
-    </Sidebar>
+      </div>
+    </div>
   );
-}
+};

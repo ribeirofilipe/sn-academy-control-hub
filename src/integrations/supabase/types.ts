@@ -24,10 +24,17 @@ export type Database = {
           id: string
           instagram_username: string | null
           nome: string
+          observacoes_pagamento: string | null
+          pagamento_manual: boolean | null
+          parcelas_pagas: number | null
+          parcelas_total: number | null
+          proximo_vencimento: string | null
           status_acesso: string | null
           telefone: string | null
+          tipo_pagamento: string | null
           transacao: string | null
           valor: number
+          valor_parcela: number | null
         }
         Insert: {
           acesso_discord?: boolean | null
@@ -43,10 +50,17 @@ export type Database = {
           id?: string
           instagram_username?: string | null
           nome: string
+          observacoes_pagamento?: string | null
+          pagamento_manual?: boolean | null
+          parcelas_pagas?: number | null
+          parcelas_total?: number | null
+          proximo_vencimento?: string | null
           status_acesso?: string | null
           telefone?: string | null
+          tipo_pagamento?: string | null
           transacao?: string | null
           valor: number
+          valor_parcela?: number | null
         }
         Update: {
           acesso_discord?: boolean | null
@@ -62,10 +76,17 @@ export type Database = {
           id?: string
           instagram_username?: string | null
           nome?: string
+          observacoes_pagamento?: string | null
+          pagamento_manual?: boolean | null
+          parcelas_pagas?: number | null
+          parcelas_total?: number | null
+          proximo_vencimento?: string | null
           status_acesso?: string | null
           telefone?: string | null
+          tipo_pagamento?: string | null
           transacao?: string | null
           valor?: number
+          valor_parcela?: number | null
         }
         Relationships: []
       }
@@ -2076,6 +2097,62 @@ export type Database = {
           valor?: number
         }
         Relationships: []
+      }
+      pagamentos_manuais: {
+        Row: {
+          aluna_id: string
+          created_at: string | null
+          data_notificacao: string | null
+          data_pagamento: string | null
+          data_vencimento: string
+          forma_pagamento: string | null
+          id: string
+          notificacao_enviada: boolean | null
+          numero_parcela: number
+          observacoes: string | null
+          status: string
+          updated_at: string | null
+          valor_parcela: number
+        }
+        Insert: {
+          aluna_id: string
+          created_at?: string | null
+          data_notificacao?: string | null
+          data_pagamento?: string | null
+          data_vencimento: string
+          forma_pagamento?: string | null
+          id?: string
+          notificacao_enviada?: boolean | null
+          numero_parcela: number
+          observacoes?: string | null
+          status?: string
+          updated_at?: string | null
+          valor_parcela: number
+        }
+        Update: {
+          aluna_id?: string
+          created_at?: string | null
+          data_notificacao?: string | null
+          data_pagamento?: string | null
+          data_vencimento?: string
+          forma_pagamento?: string | null
+          id?: string
+          notificacao_enviada?: boolean | null
+          numero_parcela?: number
+          observacoes?: string | null
+          status?: string
+          updated_at?: string | null
+          valor_parcela?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pagamentos_manuais_aluna_id_fkey"
+            columns: ["aluna_id"]
+            isOneToOne: false
+            referencedRelation: "alunas_hotmart"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       process_docs_vectorized: {
         Row: {

@@ -1,113 +1,89 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
+
+import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { AuthProvider } from "@/contexts/AuthContext";
-import { ThemeProvider } from "@/contexts/ThemeContext";
-import { Layout } from "@/components/Layout";
-import { ProtectedRoute } from "@/components/ProtectedRoute";
-import { RoleBasedRedirect } from "@/components/RoleBasedRedirect";
-
-// Pages
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from '@/contexts/AuthContext';
+import { ProtectedRoute } from '@/components/ProtectedRoute';
+import { RoleBasedRedirect } from '@/components/RoleBasedRedirect';
+import Index from "./pages/Index";
 import Login from "./pages/Login";
+import NotFound from "./pages/NotFound";
+
+// Admin pages
 import AdminDashboard from "./pages/admin/Dashboard";
-import Sales from "./pages/admin/Sales";
 import Students from "./pages/admin/Students";
+import Sales from "./pages/admin/Sales";
 import InstagramRequests from "./pages/admin/InstagramRequests";
 import Settings from "./pages/admin/Settings";
+import PaymentManagement from "./pages/admin/PaymentManagement";
+
+// Student pages
 import StudentDashboard from "./pages/student/Dashboard";
-import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <ThemeProvider defaultTheme="light" storageKey="sn-academy-theme">
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <TooltipProvider>
           <Toaster />
-          <Sonner />
           <BrowserRouter>
             <Routes>
-              {/* Public Routes */}
+              {/* Public routes */}
               <Route path="/login" element={<Login />} />
               
-              {/* Protected Routes */}
+              {/* Root redirect based on role */}
               <Route path="/" element={<RoleBasedRedirect />} />
               
-              {/* Admin Routes */}
-              <Route 
-                path="/admin/dashboard" 
-                element={
-                  <ProtectedRoute allowedRoles={['ADMIN']}>
-                    <Layout>
-                      <AdminDashboard />
-                    </Layout>
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/admin/sales" 
-                element={
-                  <ProtectedRoute allowedRoles={['ADMIN']}>
-                    <Layout>
-                      <Sales />
-                    </Layout>
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/admin/students" 
-                element={
-                  <ProtectedRoute allowedRoles={['ADMIN']}>
-                    <Layout>
-                      <Students />
-                    </Layout>
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/admin/instagram-requests" 
-                element={
-                  <ProtectedRoute allowedRoles={['ADMIN']}>
-                    <Layout>
-                      <InstagramRequests />
-                    </Layout>
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/admin/settings" 
-                element={
-                  <ProtectedRoute allowedRoles={['ADMIN']}>
-                    <Layout>
-                      <Settings />
-                    </Layout>
-                  </ProtectedRoute>
-                } 
-              />
+              {/* Protected Admin routes */}
+              <Route path="/admin/dashboard" element={
+                <ProtectedRoute allowedRoles={['ADMIN']}>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/students" element={
+                <ProtectedRoute allowedRoles={['ADMIN']}>
+                  <Students />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/sales" element={
+                <ProtectedRoute allowedRoles={['ADMIN']}>
+                  <Sales />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/instagram-requests" element={
+                <ProtectedRoute allowedRoles={['ADMIN']}>
+                  <InstagramRequests />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/payment-management" element={
+                <ProtectedRoute allowedRoles={['ADMIN']}>
+                  <PaymentManagement />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/settings" element={
+                <ProtectedRoute allowedRoles={['ADMIN']}>
+                  <Settings />
+                </ProtectedRoute>
+              } />
               
-              {/* Student Routes */}
-              <Route 
-                path="/student/dashboard" 
-                element={
-                  <ProtectedRoute allowedRoles={['STUDENT']}>
-                    <Layout>
-                      <StudentDashboard />
-                    </Layout>
-                  </ProtectedRoute>
-                } 
-              />
+              {/* Protected Student routes */}
+              <Route path="/student/dashboard" element={
+                <ProtectedRoute allowedRoles={['STUDENT']}>
+                  <StudentDashboard />
+                </ProtectedRoute>
+              } />
               
-              {/* Catch-all */}
+              {/* Fallback routes */}
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
         </TooltipProvider>
       </AuthProvider>
-    </ThemeProvider>
-  </QueryClientProvider>
-);
+    </QueryClientProvider>
+  );
+}
 
 export default App;
