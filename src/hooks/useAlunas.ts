@@ -1,4 +1,3 @@
-
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -8,13 +7,13 @@ export interface AlunaFilters {
   dataFim?: string;
 }
 
-export const useAlunas = (filters: AlunaFilters = {}) => {
+export const useAlunas = (filters: AlunaFilters = {}, page: number = 1, limit: number = 50) => {
   return useQuery({
-    queryKey: ['alunas', filters],
+    queryKey: ['alunas', filters, page, limit],
     queryFn: async () => {
       let query = supabase
         .from('alunas_hotmart')
-        .select('*')
+        .select('*', { count: 'exact' })
         .order('data_compra', { ascending: false });
 
       if (filters.curso) {
@@ -29,14 +28,23 @@ export const useAlunas = (filters: AlunaFilters = {}) => {
         query = query.lte('data_compra', filters.dataFim);
       }
 
-      const { data, error } = await query;
+      // Add pagination
+      const from = (page - 1) * limit;
+      const to = from + limit - 1;
+      query = query.range(from, to);
+
+      const { data, error, count } = await query;
       
       if (error) {
         console.error('Error fetching alunas:', error);
         throw error;
       }
       
-      return data || [];
+      return {
+        data: data || [],
+        count: count || 0,
+        totalPages: Math.ceil((count || 0) / limit)
+      };
     },
   });
 };

@@ -1,87 +1,72 @@
-
-import { Toaster } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AuthProvider } from '@/contexts/AuthContext';
-import { ProtectedRoute } from '@/components/ProtectedRoute';
-import { RoleBasedRedirect } from '@/components/RoleBasedRedirect';
-import Index from "./pages/Index";
-import Login from "./pages/Login";
-import NotFound from "./pages/NotFound";
-
-// Admin pages
-import AdminDashboard from "./pages/admin/Dashboard";
-import Students from "./pages/admin/Students";
-import Sales from "./pages/admin/Sales";
-import InstagramRequests from "./pages/admin/InstagramRequests";
-import Settings from "./pages/admin/Settings";
-import PaymentManagement from "./pages/admin/PaymentManagement";
-
-// Student pages
-import StudentDashboard from "./pages/student/Dashboard";
+import { AuthProvider } from "@/contexts/AuthContext";
+import { ThemeProvider } from "@/contexts/ThemeContext";
+import { Toaster } from "@/components/ui/sonner";
+import Index from "@/pages/Index";
+import Login from "@/pages/Login";
+import AdminDashboard from "@/pages/admin/Dashboard";
+import Students from "@/pages/admin/Students";
+import PaymentManagement from "@/pages/admin/PaymentManagement";
+import InstagramRequests from "@/pages/admin/InstagramRequests";
+import Settings from "@/pages/admin/Settings";
+import StudentDashboard from "@/pages/student/Dashboard";
+import NotFound from "@/pages/NotFound";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { RoleBasedRedirect } from "@/components/RoleBasedRedirect";
 
 const queryClient = new QueryClient();
 
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <TooltipProvider>
-          <Toaster />
-          <BrowserRouter>
+      <ThemeProvider>
+        <AuthProvider>
+          <Router>
             <Routes>
-              {/* Public routes */}
+              <Route path="/" element={<Index />} />
               <Route path="/login" element={<Login />} />
               
-              {/* Root redirect based on role */}
-              <Route path="/" element={<RoleBasedRedirect />} />
+              {/* Admin Routes */}
+              <Route
+                path="/admin/*"
+                element={
+                  <ProtectedRoute allowedRoles={['ADMIN']}>
+                    <Routes>
+                      <Route index element={<Navigate to="/admin/dashboard" replace />} />
+                      <Route path="dashboard" element={<AdminDashboard />} />
+                      <Route path="students" element={<Students />} />
+                      <Route path="payment-management" element={<PaymentManagement />} />
+                      <Route path="instagram-requests" element={<InstagramRequests />} />
+                      <Route path="settings" element={<Settings />} />
+                    </Routes>
+                  </ProtectedRoute>
+                }
+              />
               
-              {/* Protected Admin routes */}
-              <Route path="/admin/dashboard" element={
-                <ProtectedRoute allowedRoles={['ADMIN']}>
-                  <AdminDashboard />
-                </ProtectedRoute>
-              } />
-              <Route path="/admin/students" element={
-                <ProtectedRoute allowedRoles={['ADMIN']}>
-                  <Students />
-                </ProtectedRoute>
-              } />
-              <Route path="/admin/sales" element={
-                <ProtectedRoute allowedRoles={['ADMIN']}>
-                  <Sales />
-                </ProtectedRoute>
-              } />
-              <Route path="/admin/instagram-requests" element={
-                <ProtectedRoute allowedRoles={['ADMIN']}>
-                  <InstagramRequests />
-                </ProtectedRoute>
-              } />
-              <Route path="/admin/payment-management" element={
-                <ProtectedRoute allowedRoles={['ADMIN']}>
-                  <PaymentManagement />
-                </ProtectedRoute>
-              } />
-              <Route path="/admin/settings" element={
-                <ProtectedRoute allowedRoles={['ADMIN']}>
-                  <Settings />
-                </ProtectedRoute>
-              } />
+              {/* Student Routes */}
+              <Route
+                path="/student/*"
+                element={
+                  <ProtectedRoute allowedRoles={['STUDENT']}>
+                    <Routes>
+                      <Route index element={<Navigate to="/student/dashboard" replace />} />
+                      <Route path="dashboard" element={<StudentDashboard />} />
+                    </Routes>
+                  </ProtectedRoute>
+                }
+              />
               
-              {/* Protected Student routes */}
-              <Route path="/student/dashboard" element={
-                <ProtectedRoute allowedRoles={['STUDENT']}>
-                  <StudentDashboard />
-                </ProtectedRoute>
-              } />
+              {/* Role-based redirect */}
+              <Route path="/dashboard" element={<RoleBasedRedirect />} />
               
-              {/* Fallback routes */}
+              {/* 404 */}
               <Route path="*" element={<NotFound />} />
             </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
-      </AuthProvider>
+          </Router>
+          <Toaster />
+        </AuthProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

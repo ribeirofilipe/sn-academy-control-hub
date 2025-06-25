@@ -5,7 +5,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   LayoutDashboard,
   Users,
-  DollarSign,
   Instagram,
   Settings,
   CreditCard,
@@ -23,11 +22,6 @@ const adminNavItems = [
     title: "Alunas",
     href: "/admin/students",
     icon: Users,
-  },
-  {
-    title: "Vendas",
-    href: "/admin/sales",
-    icon: DollarSign,
   },
   {
     title: "Gerenciar Pagamentos",

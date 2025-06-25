@@ -31,10 +31,13 @@ export const CreateAlunaDialog = () => {
       await createAluna.mutateAsync({
         ...formData,
         valor: parseFloat(formData.valor),
-        pagamento_manual: true, // Mark as manual payment
+        pagamento_manual: true, // Sempre define como pagamento manual
+        tipo_pagamento: 'manual', // Adiciona tipo de pagamento manual
+        parcelas_total: 1, // Define padrão de 1 parcela
+        parcelas_pagas: 0, // Inicia com 0 parcelas pagas
       });
       
-      toast.success('Aluna adicionada com sucesso!');
+      toast.success('Aluna adicionada com sucesso! Ela aparecerá na aba "Gerenciar Pagamentos" para controle manual.');
       setOpen(false);
       setFormData({
         nome: '',
@@ -62,7 +65,7 @@ export const CreateAlunaDialog = () => {
       </DialogTrigger>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>Adicionar Nova Aluna</DialogTitle>
+          <DialogTitle>Adicionar Nova Aluna (Manual)</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -144,6 +147,10 @@ export const CreateAlunaDialog = () => {
               onChange={(e) => setFormData({ ...formData, data_compra: e.target.value })}
               required
             />
+          </div>
+
+          <div className="bg-blue-50 p-3 rounded-md text-sm text-blue-800">
+            <strong>Nota:</strong> Esta aluna será marcada como "Pagamento Manual" e aparecerá na aba "Gerenciar Pagamentos" para controle das parcelas.
           </div>
 
           <div className="flex justify-end gap-2 pt-4">
