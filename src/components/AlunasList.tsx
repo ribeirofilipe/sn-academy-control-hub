@@ -2,13 +2,15 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { formatCurrency } from '@/lib/utils';
+import { EditDiscordDialog } from './EditDiscordDialog';
 
 interface AlunaListProps {
   alunas: any[];
   isLoading: boolean;
+  onUpdate?: () => void;
 }
 
-export const AlunasList = ({ alunas, isLoading }: AlunaListProps) => {
+export const AlunasList = ({ alunas, isLoading, onUpdate }: AlunaListProps) => {
   const getStatusBadge = (status: string) => {
     const statusMap = {
       'ativo': { label: 'Ativo', variant: 'default' as const },
@@ -51,12 +53,14 @@ export const AlunasList = ({ alunas, isLoading }: AlunaListProps) => {
             <TableHead>Data Compra</TableHead>
             <TableHead>Status</TableHead>
             <TableHead>Pagamento</TableHead>
+            <TableHead>Discord User</TableHead>
+            <TableHead>Ações</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {alunas.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
+              <TableCell colSpan={9} className="text-center py-8 text-muted-foreground">
                 Nenhuma aluna encontrada
               </TableCell>
             </TableRow>
@@ -73,6 +77,17 @@ export const AlunasList = ({ alunas, isLoading }: AlunaListProps) => {
                   <Badge variant={aluna.pagamento_manual ? 'secondary' : 'outline'}>
                     {aluna.pagamento_manual ? 'Manual' : 'Automático'}
                   </Badge>
+                </TableCell>
+                <TableCell>
+                  <span className="text-sm text-muted-foreground">
+                    {aluna.discord_user_id || 'Não definido'}
+                  </span>
+                </TableCell>
+                <TableCell>
+                  <EditDiscordDialog 
+                    aluna={aluna} 
+                    onUpdate={onUpdate || (() => {})} 
+                  />
                 </TableCell>
               </TableRow>
             ))

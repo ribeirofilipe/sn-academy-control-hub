@@ -21,7 +21,7 @@ const Students = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 50;
   
-  const { data: alunasPaginated, isLoading } = useAlunas(filters, currentPage, itemsPerPage);
+  const { data: alunasPaginated, isLoading, refetch } = useAlunas(filters, currentPage, itemsPerPage);
   const alunas = alunasPaginated?.data || [];
   const totalPages = alunasPaginated?.totalPages || 1;
   const totalCount = alunasPaginated?.count || 0;
@@ -38,6 +38,10 @@ const Students = () => {
   const handleFiltersChange = (newFilters: any) => {
     setFilters(newFilters);
     setCurrentPage(1); // Reset to first page when filters change
+  };
+
+  const handleUpdate = () => {
+    refetch();
   };
 
   return (
@@ -90,12 +94,12 @@ const Students = () => {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Pendentes</CardTitle>
+              <CardTitle className="text-sm font-medium">Com Discord</CardTitle>
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {alunas.filter(a => a.status_acesso === 'pendente').length}
+                {alunas.filter(a => a.discord_user_id).length}
               </div>
             </CardContent>
           </Card>
@@ -107,7 +111,11 @@ const Students = () => {
           onClearFilters={handleClearFilters}
         />
 
-        <AlunasList alunas={alunas} isLoading={isLoading} />
+        <AlunasList 
+          alunas={alunas} 
+          isLoading={isLoading} 
+          onUpdate={handleUpdate}
+        />
 
         {totalPages > 1 && (
           <div className="flex justify-center">
