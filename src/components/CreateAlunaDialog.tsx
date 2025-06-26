@@ -16,7 +16,9 @@ export const CreateAlunaDialog = () => {
     email: '',
     telefone: '',
     curso: '',
-    valor: '',
+    valor_pago: '',
+    valor_liquido: '',
+    valor_bruto: '',
     forma_pagamento: '',
     status_acesso: 'pendente',
     data_compra: new Date().toISOString().split('T')[0],
@@ -30,7 +32,7 @@ export const CreateAlunaDialog = () => {
     try {
       await createAluna.mutateAsync({
         ...formData,
-        valor: parseFloat(formData.valor),
+        valor: parseFloat(formData.valor_liquido),
         pagamento_manual: true, // Sempre define como pagamento manual
         tipo_pagamento: 'manual', // Adiciona tipo de pagamento manual
         parcelas_total: 1, // Define padrão de 1 parcela

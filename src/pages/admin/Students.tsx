@@ -2,7 +2,6 @@
 import { useState } from 'react';
 import { Layout } from '@/components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { AlunaFilters } from '@/components/AlunaFilters';
 import { AlunasList } from '@/components/AlunasList';
 import { CreateAlunaDialog } from '@/components/CreateAlunaDialog';
 import { useAlunas } from '@/hooks/useAlunas';
@@ -15,6 +14,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
+import { AlunaFilters } from '@/components/AlunaFilters';
 
 const Students = () => {
   const [filters, setFilters] = useState({});

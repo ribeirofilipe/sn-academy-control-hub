@@ -13,9 +13,9 @@ interface AlunaListProps {
 export const AlunasList = ({ alunas, isLoading, onUpdate }: AlunaListProps) => {
   const getStatusBadge = (status: string) => {
     const statusMap = {
-      'ativo': { label: 'Ativo', variant: 'default' as const },
-      'pendente': { label: 'Pendente', variant: 'secondary' as const },
-      'cancelado': { label: 'Cancelado', variant: 'destructive' as const },
+      'ativo': { label: 'ATIVO', variant: 'default' as const },
+      'pendente': { label: 'PENDENTE', variant: 'secondary' as const },
+      'cancelado': { label: 'CANCELADO', variant: 'destructive' as const },
       'expirado': { label: 'Expirado', variant: 'outline' as const },
     };
 
@@ -27,6 +27,25 @@ export const AlunasList = ({ alunas, isLoading, onUpdate }: AlunaListProps) => {
       </Badge>
     );
   };
+
+  const getCourseName = (name: string) => {
+    const statusMap = {
+      'Formação Eternização de Flores': { label: 'FEF', variant: 'default' as const },
+      'Formação Seu Negócio de Resina': { label: 'SNR', variant: 'secondary' as const },
+      'Os Segredos da Desidratação de Flores': { label: 'Ebook', variant: 'destructive' as const },
+      'Precificando seu Artesanato': { label: 'Precificando', variant: 'outline' as const },
+      'Fornecedores - Desidratação de Flores': { label: 'Fornecedores', variant: 'outline' as const },
+      'SN - Técnicas Modernas Russas': { label: 'Técnicas Russas', variant: 'outline' as const },
+    };
+
+    const courseInfo = statusMap[name as keyof typeof statusMap] || { label: name, variant: 'outline' as const };;
+
+    return (
+      <Badge variant={courseInfo.variant}>
+        {courseInfo.label}
+      </Badge>
+    );
+  }
 
   const formatDate = (dateString: string) => {
     if (!dateString) return '-';
@@ -49,11 +68,11 @@ export const AlunasList = ({ alunas, isLoading, onUpdate }: AlunaListProps) => {
             <TableHead>Nome</TableHead>
             <TableHead>Email</TableHead>
             <TableHead>Curso</TableHead>
-            <TableHead>Valor</TableHead>
-            <TableHead>Data Compra</TableHead>
+            <TableHead>Líquido</TableHead>
+            <TableHead>Pago</TableHead>
+            <TableHead>Data</TableHead>
             <TableHead>Status</TableHead>
-            <TableHead>Pagamento</TableHead>
-            <TableHead>Discord User</TableHead>
+            <TableHead>Discord</TableHead>
             <TableHead>Ações</TableHead>
           </TableRow>
         </TableHeader>
@@ -69,15 +88,11 @@ export const AlunasList = ({ alunas, isLoading, onUpdate }: AlunaListProps) => {
               <TableRow key={aluna.id}>
                 <TableCell className="font-medium">{aluna.nome}</TableCell>
                 <TableCell>{aluna.email}</TableCell>
-                <TableCell>{aluna.curso}</TableCell>
-                <TableCell>{formatCurrency(aluna.valor)}</TableCell>
+                <TableCell>{getCourseName(aluna.curso)}</TableCell>
+                <TableCell>{formatCurrency(aluna.valor_liquido || 0)}</TableCell>
+                <TableCell>{formatCurrency(aluna.valor_pago || 0)}</TableCell>
                 <TableCell>{formatDate(aluna.data_compra)}</TableCell>
                 <TableCell>{getStatusBadge(aluna.status_acesso || 'pendente')}</TableCell>
-                <TableCell>
-                  <Badge variant={aluna.pagamento_manual ? 'secondary' : 'outline'}>
-                    {aluna.pagamento_manual ? 'Manual' : 'Automático'}
-                  </Badge>
-                </TableCell>
                 <TableCell>
                   <span className="text-sm text-muted-foreground">
                     {aluna.discord_user_id || 'Não definido'}

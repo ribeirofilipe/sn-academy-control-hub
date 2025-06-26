@@ -190,7 +190,7 @@ const PaymentManagement = () => {
                             <TableCell className="font-medium">{aluna.nome}</TableCell>
                             <TableCell>{aluna.email}</TableCell>
                             <TableCell>{aluna.curso}</TableCell>
-                            <TableCell>{formatCurrency(aluna.valor)}</TableCell>
+                            <TableCell>{formatCurrency(aluna.valor_liquido)}</TableCell>
                             <TableCell>{formatDate(aluna.data_compra)}</TableCell>
                             <TableCell>
                               <PaymentManagementDialog aluna={aluna} />

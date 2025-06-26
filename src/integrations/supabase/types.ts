@@ -33,8 +33,13 @@ export type Database = {
           telefone: string | null
           tipo_pagamento: string | null
           transacao: string | null
-          valor: number
           valor_parcela: number | null
+          valor_liquido: number | null
+          valor_bruto: number | null
+          valor_pago: number | null
+          data_garantia: string | null
+          oferta: string | null
+          origin: string | null
         }
         Insert: {
           acesso_discord?: boolean | null
@@ -59,8 +64,13 @@ export type Database = {
           telefone?: string | null
           tipo_pagamento?: string | null
           transacao?: string | null
-          valor: number
           valor_parcela?: number | null
+          valor_liquido?: number | null
+          valor_bruto?: number | null
+          valor_pago?: number | null
+          data_garantia?: string | null
+          oferta?: string | null
+          origin?: string | null
         }
         Update: {
           acesso_discord?: boolean | null
@@ -85,8 +95,13 @@ export type Database = {
           telefone?: string | null
           tipo_pagamento?: string | null
           transacao?: string | null
-          valor?: number
           valor_parcela?: number | null
+          valor_liquido?: number | null
+          valor_bruto?: number | null
+          valor_pago?: number | null
+          data_garantia?: string | null
+          oferta?: string | null
+          origin?: string | null
         }
         Relationships: []
       }

@@ -6,11 +6,12 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Search, X } from 'lucide-react';
 import { useCursos } from '@/hooks/useAlunas';
 
-interface AlunaFiltersProps {
+export interface AlunaFiltersProps {
   filters: {
     curso?: string;
     dataInicio?: string;
     dataFim?: string;
+    query?: string;
   };
   onFiltersChange: (filters: any) => void;
   onClearFilters: () => void;
@@ -25,6 +26,19 @@ export const AlunaFilters = ({ filters, onFiltersChange, onClearFilters }: Aluna
     <Card className="mb-6">
       <CardContent className="pt-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            {/* 🔍 Filtro por texto */}
+            <div>
+              <label className="text-sm font-medium mb-2 block">Buscar aluna</label>
+              <Input
+                type="text"
+                placeholder="Nome, email ou transação"
+                value={filters.query || ""}
+                onChange={(e) =>
+                  onFiltersChange({ ...filters, query: e.target.value || undefined })
+                }
+              />
+            </div>
+
           <div>
             <label className="text-sm font-medium mb-2 block">Curso</label>
             <Select

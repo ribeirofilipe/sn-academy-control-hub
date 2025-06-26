@@ -19,7 +19,7 @@ const Sales = () => {
     );
   }
 
-  const totalRevenue = alunas.reduce((sum, aluna) => sum + (aluna.valor || 0), 0);
+  const totalRevenue = alunas.reduce((sum, aluna) => sum + (aluna.valor_liquido || aluna.valor_pago), 0);
   const totalStudents = alunas.length;
   const activeStudents = alunas.filter(a => a.status_acesso === 'ativo').length;
 
@@ -31,7 +31,7 @@ const Sales = () => {
       const compraDate = new Date(aluna.data_compra);
       return compraDate.getMonth() === currentMonth && compraDate.getFullYear() === currentYear;
     })
-    .reduce((sum, aluna) => sum + (aluna.valor || 0), 0);
+    .reduce((sum, aluna) => sum + (aluna.valor_liquido || aluna.valor_pago), 0);
 
   return (
     <Layout>
@@ -107,7 +107,7 @@ const Sales = () => {
                 {Object.entries(
                   alunas.reduce((acc, aluna) => {
                     const curso = aluna.curso || 'Sem curso';
-                    acc[curso] = (acc[curso] || 0) + (aluna.valor || 0);
+                    acc[curso] = (acc[curso] || 0) + (aluna.valor_liquido || aluna.valor_pago);
                     return acc;
                   }, {} as Record<string, number>)
                 ).map(([curso, valor]) => (

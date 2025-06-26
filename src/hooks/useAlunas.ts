@@ -5,6 +5,7 @@ export interface AlunaFilters {
   curso?: string;
   dataInicio?: string;
   dataFim?: string;
+  query?: string;
 }
 
 export const useAlunas = (filters: AlunaFilters = {}, page: number = 1, limit: number = 50) => {
@@ -26,6 +27,16 @@ export const useAlunas = (filters: AlunaFilters = {}, page: number = 1, limit: n
 
       if (filters.dataFim) {
         query = query.lte('data_compra', filters.dataFim);
+      }
+
+      console.log(filters.query)
+
+      if (filters.query) {
+        const q = filters.query.toLowerCase();
+
+        query = query.or(
+          `email.ilike.*${q}*,nome.ilike.*${q}*,transacao.ilike.*${q}*`
+        );
       }
 
       // Add pagination

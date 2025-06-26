@@ -27,6 +27,7 @@ export const EditDiscordDialog = ({ aluna, onUpdate }: EditDiscordDialogProps) =
         .from('alunas_hotmart')
         .update({ 
           discord_user_id: discordUser || null,
+          acesso_discord: true,
           atualizado_em: new Date().toISOString()
         })
         .eq('id', aluna.id);
@@ -37,7 +38,6 @@ export const EditDiscordDialog = ({ aluna, onUpdate }: EditDiscordDialogProps) =
       setOpen(false);
       onUpdate();
     } catch (error) {
-      console.error('Error updating discord user:', error);
       toast.error('Erro ao atualizar discord user');
     } finally {
       setIsLoading(false);
