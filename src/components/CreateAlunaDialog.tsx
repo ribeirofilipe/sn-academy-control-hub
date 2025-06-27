@@ -16,9 +16,9 @@ export const CreateAlunaDialog = () => {
     email: '',
     telefone: '',
     curso: '',
-    valor_pago: '',
-    valor_liquido: '',
-    valor_bruto: '',
+    valor_pago: 0,
+    valor_liquido: 0,
+    valor_bruto: 0,
     forma_pagamento: '',
     status_acesso: 'pendente',
     data_compra: new Date().toISOString().split('T')[0],
@@ -32,9 +32,10 @@ export const CreateAlunaDialog = () => {
     try {
       await createAluna.mutateAsync({
         ...formData,
-        valor: parseFloat(formData.valor_liquido),
+        valor_bruto: formData.valor_bruto,
+        valor_pago: formData.valor_bruto,
         pagamento_manual: true, // Sempre define como pagamento manual
-        tipo_pagamento: 'manual', // Adiciona tipo de pagamento manual
+        forma_pagamento: 'manual', // Adiciona tipo de pagamento manual
         parcelas_total: 1, // Define padrão de 1 parcela
         parcelas_pagas: 0, // Inicia com 0 parcelas pagas
       });
@@ -46,7 +47,9 @@ export const CreateAlunaDialog = () => {
         email: '',
         telefone: '',
         curso: '',
-        valor: '',
+        valor_bruto: 0,
+        valor_liquido: 0,
+        valor_pago: 0,
         forma_pagamento: '',
         status_acesso: 'pendente',
         data_compra: new Date().toISOString().split('T')[0],
@@ -112,13 +115,13 @@ export const CreateAlunaDialog = () => {
           </div>
   
           <div>
-            <Label htmlFor="valor">Valor *</Label>
+            <Label htmlFor="valor_bruto">Valor Bruto *</Label>
             <Input
-              id="valor"
+              id="valor_bruto"
               type="number"
               step="0.01"
-              value={formData.valor}
-              onChange={(e) => setFormData({ ...formData, valor: e.target.value })}
+              value={formData.valor_bruto}
+              onChange={(e) => setFormData({ ...formData, valor_bruto: e.target.value })}
               required
             />
           </div>

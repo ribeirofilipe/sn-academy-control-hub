@@ -31,7 +31,6 @@ export type Database = {
           proximo_vencimento: string | null
           status_acesso: string | null
           telefone: string | null
-          tipo_pagamento: string | null
           transacao: string | null
           valor_parcela: number | null
           valor_liquido: number | null
@@ -62,7 +61,6 @@ export type Database = {
           proximo_vencimento?: string | null
           status_acesso?: string | null
           telefone?: string | null
-          tipo_pagamento?: string | null
           transacao?: string | null
           valor_parcela?: number | null
           valor_liquido?: number | null
@@ -93,7 +91,6 @@ export type Database = {
           proximo_vencimento?: string | null
           status_acesso?: string | null
           telefone?: string | null
-          tipo_pagamento?: string | null
           transacao?: string | null
           valor_parcela?: number | null
           valor_liquido?: number | null

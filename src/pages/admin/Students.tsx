@@ -1,10 +1,10 @@
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Layout } from '@/components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlunasList } from '@/components/AlunasList';
 import { CreateAlunaDialog } from '@/components/CreateAlunaDialog';
-import { useAlunas } from '@/hooks/useAlunas';
+import { summaryStudents, useAlunas, useStudentSummary } from '@/hooks/useAlunas';
 import { Users } from 'lucide-react';
 import {
   Pagination,
@@ -25,6 +25,8 @@ const Students = () => {
   const alunas = alunasPaginated?.data || [];
   const totalPages = alunasPaginated?.totalPages || 1;
   const totalCount = alunasPaginated?.count || 0;
+
+  const { data: summary } = useStudentSummary()
 
   const handleClearFilters = () => {
     setFilters({});
@@ -75,7 +77,7 @@ const Students = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {alunas.filter(a => a.status_acesso === 'ativo').length}
+                {summary?.ativasCount}
               </div>
             </CardContent>
           </Card>
@@ -99,7 +101,7 @@ const Students = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {alunas.filter(a => a.discord_user_id).length}
+                {summary?.discordCount}
               </div>
             </CardContent>
           </Card>

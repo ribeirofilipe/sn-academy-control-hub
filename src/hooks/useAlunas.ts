@@ -29,8 +29,6 @@ export const useAlunas = (filters: AlunaFilters = {}, page: number = 1, limit: n
         query = query.lte('data_compra', filters.dataFim);
       }
 
-      console.log(filters.query)
-
       if (filters.query) {
         const q = filters.query.toLowerCase();
 
@@ -55,6 +53,32 @@ export const useAlunas = (filters: AlunaFilters = {}, page: number = 1, limit: n
         data: data || [],
         count: count || 0,
         totalPages: Math.ceil((count || 0) / limit)
+      };
+    },
+  });
+};
+
+export const useStudentSummary = () => {
+  return useQuery({
+    queryKey: ['alunas-stats'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('alunas_hotmart')
+        .select('discord_user_id, status_acesso');
+
+      if (error) throw error;
+
+      const discordCount = data?.filter(aluna => 
+        aluna.discord_user_id !== null
+      ).length || 0;
+
+      const ativasCount = data?.filter(aluna => 
+        aluna.status_acesso === 'ativo'
+      ).length || 0;
+
+      return {
+        discordCount,
+        ativasCount,
       };
     },
   });
