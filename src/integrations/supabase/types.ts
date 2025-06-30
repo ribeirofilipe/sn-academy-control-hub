@@ -18,6 +18,7 @@ export type Database = {
           curso: string
           data_compra: string
           data_expiracao: string | null
+          data_garantia: string | null
           discord_user_id: string | null
           email: string
           forma_pagamento: string
@@ -25,6 +26,8 @@ export type Database = {
           instagram_username: string | null
           nome: string
           observacoes_pagamento: string | null
+          oferta: string | null
+          origin: string | null
           pagamento_manual: boolean | null
           parcelas_pagas: number | null
           parcelas_total: number | null
@@ -32,13 +35,10 @@ export type Database = {
           status_acesso: string | null
           telefone: string | null
           transacao: string | null
-          valor_parcela: number | null
-          valor_liquido: number | null
           valor_bruto: number | null
+          valor_liquido: number | null
           valor_pago: number | null
-          data_garantia: string | null
-          oferta: string | null
-          origin: string | null
+          valor_parcela: number | null
         }
         Insert: {
           acesso_discord?: boolean | null
@@ -48,6 +48,7 @@ export type Database = {
           curso: string
           data_compra: string
           data_expiracao?: string | null
+          data_garantia?: string | null
           discord_user_id?: string | null
           email: string
           forma_pagamento: string
@@ -55,6 +56,8 @@ export type Database = {
           instagram_username?: string | null
           nome: string
           observacoes_pagamento?: string | null
+          oferta?: string | null
+          origin?: string | null
           pagamento_manual?: boolean | null
           parcelas_pagas?: number | null
           parcelas_total?: number | null
@@ -62,13 +65,10 @@ export type Database = {
           status_acesso?: string | null
           telefone?: string | null
           transacao?: string | null
-          valor_parcela?: number | null
-          valor_liquido?: number | null
           valor_bruto?: number | null
+          valor_liquido?: number | null
           valor_pago?: number | null
-          data_garantia?: string | null
-          oferta?: string | null
-          origin?: string | null
+          valor_parcela?: number | null
         }
         Update: {
           acesso_discord?: boolean | null
@@ -78,6 +78,7 @@ export type Database = {
           curso?: string
           data_compra?: string
           data_expiracao?: string | null
+          data_garantia?: string | null
           discord_user_id?: string | null
           email?: string
           forma_pagamento?: string
@@ -85,6 +86,8 @@ export type Database = {
           instagram_username?: string | null
           nome?: string
           observacoes_pagamento?: string | null
+          oferta?: string | null
+          origin?: string | null
           pagamento_manual?: boolean | null
           parcelas_pagas?: number | null
           parcelas_total?: number | null
@@ -92,13 +95,10 @@ export type Database = {
           status_acesso?: string | null
           telefone?: string | null
           transacao?: string | null
-          valor_parcela?: number | null
-          valor_liquido?: number | null
           valor_bruto?: number | null
+          valor_liquido?: number | null
           valor_pago?: number | null
-          data_garantia?: string | null
-          oferta?: string | null
-          origin?: string | null
+          valor_parcela?: number | null
         }
         Relationships: []
       }

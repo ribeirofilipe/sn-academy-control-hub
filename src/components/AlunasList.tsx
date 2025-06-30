@@ -3,6 +3,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { formatCurrency } from '@/lib/utils';
 import { EditDiscordDialog } from './EditDiscordDialog';
+import { StatusSelect } from './StatusSelect';
 
 interface AlunaListProps {
   alunas: any[];
@@ -92,7 +93,12 @@ export const AlunasList = ({ alunas, isLoading, onUpdate }: AlunaListProps) => {
                 <TableCell>{formatCurrency(aluna.valor_liquido || 0)}</TableCell>
                 <TableCell>{formatCurrency(aluna.valor_pago || 0)}</TableCell>
                 <TableCell>{formatDate(aluna.data_compra)}</TableCell>
-                <TableCell>{getStatusBadge(aluna.status_acesso || 'pendente')}</TableCell>
+                <TableCell>
+                  <StatusSelect 
+                    currentStatus={aluna.status_acesso || 'pendente'} 
+                    alunaId={aluna.id} 
+                  />
+                </TableCell>
                 <TableCell>
                   <span className="text-sm text-muted-foreground">
                     {aluna.discord_user_id || 'Não definido'}
