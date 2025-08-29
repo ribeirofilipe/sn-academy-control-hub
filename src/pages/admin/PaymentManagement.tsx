@@ -1,20 +1,21 @@
 import { useState } from 'react';
 import { Layout } from '@/components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { SearchByEmail } from '@/components/payments/SearchByEmail';
-import { EmailResults } from '@/components/payments/EmailResults';
-import { CoursePurchasesList } from '@/components/payments/CoursePurchasesList';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 import { InstallmentsTable } from '@/components/payments/InstallmentsTable';
 import { CreateInstallmentsForm } from '@/components/payments/CreateInstallmentsForm';
 import { CreateManualPurchaseForm } from '@/components/payments/CreateManualPurchaseForm';
 import { useAlunasPagamentoManual, usePagamentosManuais } from '@/hooks/usePayments';
 import { Users, DollarSign, AlertTriangle, FileText } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils';
+import { ManualStudentsTable } from '@/components/payments/ManualStudentsTable';
 
 const PaymentManagement = () => {
-  const [searchEmails, setSearchEmails] = useState<string[]>([]);
+  
   const [selectedEmail, setSelectedEmail] = useState<string | null>(null);
   const [selectedAlunaId, setSelectedAlunaId] = useState<string | null>(null);
+  const [openCreate, setOpenCreate] = useState(false);
 
   const { data: alunasPagamentoManual } = useAlunasPagamentoManual();
   const { data: allPagamentos } = usePagamentosManuais();
@@ -33,10 +34,25 @@ const PaymentManagement = () => {
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold">Gerenciar Pagamentos</h1>
-            <p className="text-muted-foreground">
-              Busque por e-mail para gerenciar parcelas de forma simples
-            </p>
+            <p className="text-muted-foreground">Tabela de alunas (pagamento manual) com criação simples via diálogo</p>
           </div>
+          <Dialog open={openCreate} onOpenChange={setOpenCreate}>
+            <DialogTrigger asChild>
+              <Button variant="default">Nova aluna</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Nova compra manual</DialogTitle>
+              </DialogHeader>
+              <CreateManualPurchaseForm
+                onPurchaseCreated={(email, alunaId) => {
+                  setSelectedEmail(email);
+                  setSelectedAlunaId(alunaId);
+                  setOpenCreate(false);
+                }}
+              />
+            </DialogContent>
+          </Dialog>
         </div>
 
         {/* Cards de resumo */}
@@ -86,49 +102,28 @@ const PaymentManagement = () => {
           </Card>
         </div>
 
-        {/* Nova compra manual */}
-        <div className="mb-6">
-          <CreateManualPurchaseForm 
-            onPurchaseCreated={(email, alunaId) => {
-              setSearchEmails([email]);
-              setSelectedEmail(email);
-              setSelectedAlunaId(alunaId);
-            }}
-          />
-        </div>
+        {/* Nova compra via diálogo no header */}
 
-        {/* Layout 3 colunas */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Coluna 1: Busca e Resultados */}
+        {/* Layout 2 colunas simples */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Coluna 1: Tabela de alunas com pagamento manual */}
           <div className="space-y-4">
-            <SearchByEmail onEmailSelect={setSearchEmails} />
-            {searchEmails.length > 0 && (
-              <EmailResults 
-                emails={searchEmails}
-                selectedEmail={selectedEmail}
-                onEmailSelect={setSelectedEmail}
-              />
-            )}
-            {selectedEmail && (
-              <CoursePurchasesList
-                email={selectedEmail}
-                selectedAlunaId={selectedAlunaId}
-                onAlunaSelect={setSelectedAlunaId}
-              />
-            )}
+            <ManualStudentsTable
+              selectedAlunaId={selectedAlunaId}
+              onSelect={(email, alunaId) => {
+                setSelectedEmail(email);
+                setSelectedAlunaId(alunaId);
+              }}
+            />
           </div>
 
-          {/* Coluna 2: Parcelas */}
-          <div>
+          {/* Coluna 2: Parcelas + Criar Parcelas */}
+          <div className="space-y-4">
             <Card>
               <CardContent className="p-6">
                 <InstallmentsTable alunaId={selectedAlunaId} />
               </CardContent>
             </Card>
-          </div>
-
-          {/* Coluna 3: Criar Parcelas */}
-          <div>
             <CreateInstallmentsForm alunaId={selectedAlunaId} />
           </div>
         </div>
