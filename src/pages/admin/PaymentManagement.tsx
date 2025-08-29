@@ -6,6 +6,7 @@ import { EmailResults } from '@/components/payments/EmailResults';
 import { CoursePurchasesList } from '@/components/payments/CoursePurchasesList';
 import { InstallmentsTable } from '@/components/payments/InstallmentsTable';
 import { CreateInstallmentsForm } from '@/components/payments/CreateInstallmentsForm';
+import { CreateManualPurchaseForm } from '@/components/payments/CreateManualPurchaseForm';
 import { useAlunasPagamentoManual, usePagamentosManuais } from '@/hooks/usePayments';
 import { Users, DollarSign, AlertTriangle, FileText } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils';
@@ -83,6 +84,17 @@ const PaymentManagement = () => {
               <div className="text-2xl font-bold">{allPagamentos?.length || 0}</div>
             </CardContent>
           </Card>
+        </div>
+
+        {/* Nova compra manual */}
+        <div className="mb-6">
+          <CreateManualPurchaseForm 
+            onPurchaseCreated={(email, alunaId) => {
+              setSearchEmails([email]);
+              setSelectedEmail(email);
+              setSelectedAlunaId(alunaId);
+            }}
+          />
         </div>
 
         {/* Layout 3 colunas */}
