@@ -9,7 +9,7 @@ import { Edit2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
 interface EditDiscordDialogProps {
-  aluna: any;
+  aluna: { email: string; nome: string; discord_user_id?: string | null };
   onUpdate: () => void;
 }
 
@@ -25,20 +25,17 @@ export const EditDiscordDialog = ({ aluna, onUpdate }: EditDiscordDialogProps) =
     try {
       const { error } = await supabase
         .from('alunas_hotmart')
-        .update({ 
-          discord_user_id: discordUser || null,
-          acesso_discord: true,
-          atualizado_em: new Date().toISOString()
-        })
-        .eq('id', aluna.id);
+        .update({ discord_user_id: discordUser })
+        .eq('email', aluna.email);
 
       if (error) throw error;
-      
-      toast.success('Discord user atualizado com sucesso!');
+
+      toast.success('Discord atualizado com sucesso para todos os cursos desta aluna!');
       setOpen(false);
       onUpdate();
     } catch (error) {
-      toast.error('Erro ao atualizar discord user');
+      console.error('Error updating discord:', error);
+      toast.error('Erro ao atualizar Discord');
     } finally {
       setIsLoading(false);
     }

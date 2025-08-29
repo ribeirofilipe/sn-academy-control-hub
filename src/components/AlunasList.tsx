@@ -3,50 +3,29 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { formatCurrency } from '@/lib/utils';
 import { EditDiscordDialog } from './EditDiscordDialog';
-import { StatusSelect } from './StatusSelect';
+import { ManageCoursesDialog } from './ManageCoursesDialog';
+import { AggregatedAluna } from '@/hooks/useAlunasAggregated';
 
 interface AlunaListProps {
-  alunas: any[];
+  alunas: AggregatedAluna[];
   isLoading: boolean;
   onUpdate?: () => void;
 }
 
 export const AlunasList = ({ alunas, isLoading, onUpdate }: AlunaListProps) => {
-  const getStatusBadge = (status: string) => {
-    const statusMap = {
-      'ativo': { label: 'ATIVO', variant: 'default' as const },
-      'pendente': { label: 'PENDENTE', variant: 'secondary' as const },
-      'cancelado': { label: 'CANCELADO', variant: 'destructive' as const },
-      'expirado': { label: 'Expirado', variant: 'outline' as const },
-    };
 
-    const statusInfo = statusMap[status as keyof typeof statusMap] || { label: status, variant: 'outline' as const };
+  const getCourseBadge = (name: string) => {
+    const courseMap = {
+      'Formação Eternização de Flores': 'FEF',
+      'Formação Seu Negócio de Resina': 'SNR',
+      'Os Segredos da Desidratação de Flores': 'Ebook',
+      'Precificando seu Artesanato': 'Precificando',
+      'Fornecedores - Desidratação de Flores': 'Fornecedores',
+      'SN - Técnicas Modernas Russas': 'Técnicas Russas',
+    };
     
-    return (
-      <Badge variant={statusInfo.variant}>
-        {statusInfo.label}
-      </Badge>
-    );
+    return courseMap[name as keyof typeof courseMap] || name;
   };
-
-  const getCourseName = (name: string) => {
-    const statusMap = {
-      'Formação Eternização de Flores': { label: 'FEF', variant: 'default' as const },
-      'Formação Seu Negócio de Resina': { label: 'SNR', variant: 'secondary' as const },
-      'Os Segredos da Desidratação de Flores': { label: 'Ebook', variant: 'destructive' as const },
-      'Precificando seu Artesanato': { label: 'Precificando', variant: 'outline' as const },
-      'Fornecedores - Desidratação de Flores': { label: 'Fornecedores', variant: 'outline' as const },
-      'SN - Técnicas Modernas Russas': { label: 'Técnicas Russas', variant: 'outline' as const },
-    };
-
-    const courseInfo = statusMap[name as keyof typeof statusMap] || { label: name, variant: 'outline' as const };;
-
-    return (
-      <Badge variant={courseInfo.variant}>
-        {courseInfo.label}
-      </Badge>
-    );
-  }
 
   const formatDate = (dateString: string) => {
     if (!dateString) return '-';
@@ -68,11 +47,8 @@ export const AlunasList = ({ alunas, isLoading, onUpdate }: AlunaListProps) => {
           <TableRow>
             <TableHead>Nome</TableHead>
             <TableHead>Email</TableHead>
-            <TableHead>Curso</TableHead>
-            <TableHead>Líquido</TableHead>
-            <TableHead>Pago</TableHead>
-            <TableHead>Data</TableHead>
-            <TableHead>Status</TableHead>
+            <TableHead>Cursos</TableHead>
+            <TableHead>Total</TableHead>
             <TableHead>Discord</TableHead>
             <TableHead>Ações</TableHead>
           </TableRow>
@@ -80,24 +56,26 @@ export const AlunasList = ({ alunas, isLoading, onUpdate }: AlunaListProps) => {
         <TableBody>
           {alunas.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={9} className="text-center py-8 text-muted-foreground">
+              <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
                 Nenhuma aluna encontrada
               </TableCell>
             </TableRow>
           ) : (
             alunas.map((aluna) => (
-              <TableRow key={aluna.id}>
+              <TableRow key={aluna.email}>
                 <TableCell className="font-medium">{aluna.nome}</TableCell>
                 <TableCell>{aluna.email}</TableCell>
-                <TableCell>{getCourseName(aluna.curso)}</TableCell>
-                <TableCell>{formatCurrency(aluna.valor_liquido || 0)}</TableCell>
-                <TableCell>{formatCurrency(aluna.valor_pago || 0)}</TableCell>
-                <TableCell>{formatDate(aluna.data_compra)}</TableCell>
                 <TableCell>
-                  <StatusSelect 
-                    currentStatus={aluna.status_acesso || 'pendente'} 
-                    alunaId={aluna.id} 
-                  />
+                  <div className="flex flex-wrap gap-1">
+                    {aluna.cursos.map((curso, index) => (
+                      <Badge key={index} variant="outline">
+                        {getCourseBadge(curso.curso)}
+                      </Badge>
+                    ))}
+                  </div>
+                </TableCell>
+                <TableCell>
+                  {formatCurrency(aluna.cursos.reduce((sum, curso) => sum + (curso.valor_liquido || 0), 0))}
                 </TableCell>
                 <TableCell>
                   <span className="text-sm text-muted-foreground">
@@ -105,10 +83,16 @@ export const AlunasList = ({ alunas, isLoading, onUpdate }: AlunaListProps) => {
                   </span>
                 </TableCell>
                 <TableCell>
-                  <EditDiscordDialog 
-                    aluna={aluna} 
-                    onUpdate={onUpdate || (() => {})} 
-                  />
+                  <div className="flex items-center gap-2">
+                    <EditDiscordDialog 
+                      aluna={aluna} 
+                      onUpdate={onUpdate || (() => {})} 
+                    />
+                    <ManageCoursesDialog 
+                      email={aluna.email}
+                      nome={aluna.nome}
+                    />
+                  </div>
                 </TableCell>
               </TableRow>
             ))

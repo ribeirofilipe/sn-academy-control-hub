@@ -121,7 +121,7 @@ export const CreateAlunaDialog = () => {
               type="number"
               step="0.01"
               value={formData.valor_bruto}
-              onChange={(e) => setFormData({ ...formData, valor_bruto: e.target.value })}
+              onChange={(e) => setFormData({ ...formData, valor_bruto: Number(e.target.value) })}
               required
             />
           </div>

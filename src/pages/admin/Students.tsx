@@ -4,7 +4,8 @@ import { Layout } from '@/components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlunasList } from '@/components/AlunasList';
 import { CreateAlunaDialog } from '@/components/CreateAlunaDialog';
-import { summaryStudents, useAlunas, useStudentSummary } from '@/hooks/useAlunas';
+import { useStudentSummary } from '@/hooks/useAlunas';
+import { useAlunasAggregated } from '@/hooks/useAlunasAggregated';
 import { Users } from 'lucide-react';
 import {
   Pagination,
@@ -21,7 +22,7 @@ const Students = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 50;
   
-  const { data: alunasPaginated, isLoading, refetch } = useAlunas(filters, currentPage, itemsPerPage);
+  const { data: alunasPaginated, isLoading, refetch } = useAlunasAggregated(filters, currentPage, itemsPerPage);
   const alunas = alunasPaginated?.data || [];
   const totalPages = alunasPaginated?.totalPages || 1;
   const totalCount = alunasPaginated?.count || 0;
@@ -89,7 +90,7 @@ const Students = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {alunas.filter(a => a.pagamento_manual).length}
+                {alunas.filter(a => a.cursos.some(c => c.id)).length}
               </div>
             </CardContent>
           </Card>
